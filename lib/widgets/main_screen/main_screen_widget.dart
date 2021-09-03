@@ -11,12 +11,6 @@ class MainScreenWidget extends StatefulWidget {
 class _MainScreenWidgetState extends State<MainScreenWidget> {
   int _selectedTab = 0;
 
-  static const List<Widget> _widgetOptions = <Widget>[
-    Text('Index 0: News'),
-    MovieListWidget(),
-    Text('Index 2: Series'),
-  ];
-
   void onSelectTab(int index) {
     if (_selectedTab == index) return;
     setState(() {
@@ -39,8 +33,13 @@ class _MainScreenWidgetState extends State<MainScreenWidget> {
           ],
           onTap: onSelectTab,
         ),
-        body: Center(
-          child: _widgetOptions[_selectedTab],
-        ));
+
+        ///сразу все прогружаем и храним 3 страницы, не делаем лишних
+        ///запросов в сеть, но задействуем много памяти
+        body: IndexedStack(index: _selectedTab, children: [
+          Text('Index 0: News'),
+          MovieListWidget(),
+          Text('Index 2: Series'),
+        ]));
   }
 }
