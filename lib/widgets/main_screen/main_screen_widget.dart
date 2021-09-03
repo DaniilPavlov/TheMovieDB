@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:themoviedb/widgets/movie_list/movie_list_widget.dart';
 
 class MainScreenWidget extends StatefulWidget {
   const MainScreenWidget({Key? key}) : super(key: key);
@@ -12,7 +13,7 @@ class _MainScreenWidgetState extends State<MainScreenWidget> {
 
   static const List<Widget> _widgetOptions = <Widget>[
     Text('Index 0: News'),
-    Text('Index 1: Films'),
+    MovieListWidget(),
     Text('Index 2: Series'),
   ];
 
@@ -38,6 +39,8 @@ class _MainScreenWidgetState extends State<MainScreenWidget> {
           ],
           onTap: onSelectTab,
         ),
-        body: Center(child: _widgetOptions[_selectedTab],));
+        body: Center(
+          child: _widgetOptions[_selectedTab],
+        ));
   }
 }
