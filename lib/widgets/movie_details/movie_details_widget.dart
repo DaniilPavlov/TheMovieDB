@@ -3,6 +3,7 @@ import 'package:themoviedb/Theme/app_colors.dart';
 import 'package:themoviedb/widgets/movie_list/movie_list_widget.dart';
 
 import 'movie_details_main_info_widget.dart';
+import 'movie_details_screen_cast_widget.dart';
 
 class MovieDetailsWidget extends StatefulWidget {
   final Movie movie;
@@ -24,7 +25,7 @@ class _MovieDetailsWidgetState extends State<MovieDetailsWidget> {
         child: ListView(
           children: [
             MovieDetailsMainInfoWidget(),
-            // MovieDetailsMainScreenCastWidget(),
+            MovieDetailsMainScreenCastWidget(),
           ],
         ),
       ),
