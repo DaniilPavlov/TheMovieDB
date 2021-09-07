@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:themoviedb/domain/api_client/api_client.dart';
 import 'package:themoviedb/domain/data_providers/session_data_provider.dart';
+import 'package:themoviedb/ui/navigation/main_navigation.dart';
 
 class AuthModel extends ChangeNotifier {
   //Указать от кого наследуется
@@ -14,6 +15,7 @@ class AuthModel extends ChangeNotifier {
   bool _isAuthProgress = false;
 
   bool get canStartAuth => !_isAuthProgress;
+
   bool get isAuthProgress => _isAuthProgress;
 
   // String? _sessionId;
@@ -65,9 +67,10 @@ class AuthModel extends ChangeNotifier {
     }
     await _sessionDataProvider.setSessionId(sessionId);
 
-    Navigator.of(context).pushNamed('/main_screen');
+    // Navigator.of(context).pushNamed('/main_screen');
     // Navigator.of(context).pushNamed(RouteScreen.mainScreen);
-    // Navigator.of(context).pushNamed(MainNavigationRouteNames.mainScreen);
+    Navigator.of(context)
+        .pushReplacementNamed(MainNavigationRouteNames.mainScreen);
 
     //notifyListeners();
     //_sessionId =_apiKlient.auth(username: login, password: password);

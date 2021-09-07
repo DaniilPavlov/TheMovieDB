@@ -6,7 +6,7 @@ import 'movie_details_main_info_widget.dart';
 import 'movie_details_screen_cast_widget.dart';
 
 class MovieDetailsWidget extends StatefulWidget {
-  final Movie movie;
+  final int movie;
   const MovieDetailsWidget({Key? key, required this.movie}) : super(key: key);
 
   @override
@@ -18,7 +18,7 @@ class _MovieDetailsWidgetState extends State<MovieDetailsWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.movie.title),
+        title: Text(widget.movie.toString()),
       ),
       body: ColoredBox(
         color: AppColors.blackBackgroundMovieDetail,

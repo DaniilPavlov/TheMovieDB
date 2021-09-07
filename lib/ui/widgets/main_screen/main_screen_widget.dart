@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:themoviedb/domain/data_providers/session_data_provider.dart';
+import 'package:themoviedb/ui/navigation/main_navigation.dart';
 import 'package:themoviedb/ui/widgets/movie_list/movie_list_widget.dart';
 
 class MainScreenWidget extends StatefulWidget {
@@ -37,9 +39,81 @@ class _MainScreenWidgetState extends State<MainScreenWidget> {
         ///сразу все прогружаем и храним 3 страницы, не делаем лишних
         ///запросов в сеть, но задействуем много памяти
         body: IndexedStack(index: _selectedTab, children: [
-          Text('Index 0: News'),
+          ExamplePaletteGenerator(),
           MovieListWidget(),
-          Text('Index 2: Series'),
+          const SerialsListWidget(),
         ]));
+  }
+}
+
+class ExamplePaletteGenerator extends StatefulWidget {
+  const ExamplePaletteGenerator({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  _ExamplePaletteGeneratorState createState() =>
+      _ExamplePaletteGeneratorState();
+}
+
+class _ExamplePaletteGeneratorState extends State<ExamplePaletteGenerator> {
+  List<Image> images = [
+    Image.network(
+      'https://pbs.twimg.com/media/D9MPesKXoAEhtdt.jpg:large',
+      filterQuality: FilterQuality.high,
+    ),
+    Image.network(
+      'https://avatars.mds.yandex.net/get-kinopoisk-blog-post-thumb/40130/59fdb7199d77ef1505da63f4d8581318/orig',
+      filterQuality: FilterQuality.high,
+    ),
+  ];
+
+  // List<PaletteColor> colors = [];
+  @override
+  void initState() {
+    super.initState();
+    // _updatePalettes();
+  }
+
+  // _updatePalettes() async {
+  //   for (var image in images) {
+  //     final PaletteGenerator generator =
+  //         await PaletteGenerator.fromImageProvider(image.image);
+  //     if (generator == null) return;
+  //     colors.add(generator.lightMutedColor != null
+  //         ? generator.lightMutedColor
+  //         : PaletteColor(Colors.blue, 2));
+  //   }
+  // }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.blue,
+      child: ListView(
+        children: images,
+      ),
+    );
+  }
+}
+
+class SerialsListWidget extends StatelessWidget {
+  const SerialsListWidget({
+    Key? key,
+  }) : super(key: key);
+
+  void logOut(BuildContext context) {
+    final provider = SessionDataProvider();
+    provider.setSessionId(null);
+    Navigator.of(context).pushReplacementNamed(MainNavigationRouteNames.auth);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+        child: ElevatedButton(
+      child: Text('log out'),
+      onPressed: () => logOut(context),
+    ));
   }
 }
