@@ -77,20 +77,20 @@ class AuthModel extends ChangeNotifier {
   }
 }
 
-class AuthProvider extends InheritedNotifier {
-  //не забыть поменять от кого наследуется инхерит
-  AuthProvider({Key? key, required this.model, required this.child})
-      : super(key: key, notifier: model, child: child);
-  final AuthModel model;
-  final Widget child;
-
-  static AuthProvider? watch(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<AuthProvider>();
-  }
-
-  static AuthProvider? read(BuildContext context) {
-    final widget =
-        context.getElementForInheritedWidgetOfExactType<AuthProvider>()?.widget;
-    return widget is AuthProvider ? widget : null;
-  }
-}
+// class AuthProvider extends InheritedNotifier {
+//   //не забыть поменять от кого наследуется инхерит
+//   AuthProvider({Key? key, required this.model, required this.child})
+//       : super(key: key, notifier: model, child: child);
+//   final AuthModel model;
+//   final Widget child;
+//
+//   static AuthProvider? watch(BuildContext context) {
+//     return context.dependOnInheritedWidgetOfExactType<AuthProvider>();
+//   }
+//
+//   static AuthProvider? read(BuildContext context) {
+//     final widget =
+//         context.getElementForInheritedWidgetOfExactType<AuthProvider>()?.widget;
+//     return widget is AuthProvider ? widget : null;
+//   }
+// }
