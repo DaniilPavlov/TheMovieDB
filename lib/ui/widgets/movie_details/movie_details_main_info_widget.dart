@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:themoviedb/Theme/app_colors.dart';
 import 'package:themoviedb/resources/app_images.dart';
-import 'package:themoviedb/widgets/custom_progress_bar_widget.dart';
+
+import '../custom_progress_bar_widget.dart';
 
 class MovieDetailsMainInfoWidget extends StatelessWidget {
   const MovieDetailsMainInfoWidget({Key? key}) : super(key: key);

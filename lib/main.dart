@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:themoviedb/Theme/app_colors.dart';
 import 'package:themoviedb/resources/app_images.dart';
-import 'package:themoviedb/widgets/auth/auth_widget.dart';
-import 'package:themoviedb/widgets/main_screen/main_screen_widget.dart';
-import 'package:themoviedb/widgets/movie_details/movie_details_widget.dart';
-import 'package:themoviedb/widgets/movie_list/movie_list_widget.dart';
+import 'package:themoviedb/ui/widgets/auth/auth_model.dart';
+import 'package:themoviedb/ui/widgets/auth/auth_widget.dart';
+import 'package:themoviedb/ui/widgets/main_screen/main_screen_widget.dart';
+import 'package:themoviedb/ui/widgets/movie_details/movie_details_widget.dart';
+import 'package:themoviedb/ui/widgets/movie_list/movie_list_widget.dart';
+
 
 void main() {
   runApp(MyApp());
@@ -24,13 +26,11 @@ class MyApp extends StatelessWidget {
             unselectedItemColor: Colors.grey),
       ),
       routes: {
-        '/auth': (context) => AuthWidget(),
-        '/main_screen': (context) => MainScreenWidget(),
+        '/auth': (context) =>
+            AuthProvider(model: AuthModel(), child: const AuthWidget()),
+        '/main_screen': (context) => const MainScreenWidget(),
         '/main_screen/movie_details': (context) {
-          final arguments = ModalRoute
-              .of(context)
-              ?.settings
-              .arguments as Movie;
+          final arguments = ModalRoute.of(context)?.settings.arguments as Movie;
           if (arguments.id is int) {
             return MovieDetailsWidget(
               movie: arguments,

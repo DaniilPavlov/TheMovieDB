@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:themoviedb/Theme/app_colors.dart';
-import 'package:themoviedb/widgets/movie_list/movie_list_widget.dart';
+import 'package:themoviedb/ui/widgets/movie_list/movie_list_widget.dart';
 
 import 'movie_details_main_info_widget.dart';
 import 'movie_details_screen_cast_widget.dart';
