@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:themoviedb/Theme/app_colors.dart';
 import 'package:themoviedb/ui/navigation/main_navigation.dart';
 
@@ -24,11 +25,11 @@ class MyApp extends StatelessWidget {
             selectedItemColor: Colors.white,
             unselectedItemColor: Colors.grey),
       ),
-      // localizationsDelegates: const [
-      //   GlobalMaterialLocalizations.delegate,
-      //   GlobalWidgetsLocalizations.delegate,
-      //   GlobalCupertinoLocalizations.delegate
-      // ],
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate
+      ],
       supportedLocales: const [
         Locale('en', ''),
         Locale('ru', 'RU'),
