@@ -27,6 +27,7 @@ class _MainScreenWidgetState extends State<MainScreenWidget> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    //через этот метод прогружаем первую страницу фильмов
     movieListModel.setupLocale(context);
   }
 
