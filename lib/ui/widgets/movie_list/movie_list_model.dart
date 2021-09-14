@@ -21,6 +21,13 @@ class MovieListModel extends ChangeNotifier {
   //когда мы грузим страницу не надо вызывать следующую загрузку
   var _isLoadingInProgress = false;
 
+  // в зависимости от того есть ли это поле мы менеям наше состояние 68 19 20
+  String? _searchQuery;
+
+  //каждое нажатие клавиши провоцирует запрос в инет на фильмы это не очень хорошо
+  //чтобы это избежать нужен таймер
+  Timer? searchDelay;
+
   //настройка локализации, производим сразу при попадании в приложение
   //после авторизации
   Future<void> setupLocale(BuildContext context) async {
@@ -47,8 +54,14 @@ class MovieListModel extends ChangeNotifier {
         .pushNamed(MainNavigationRouteNames.movieDetails, arguments: id);
   }
 
+  // если квери не пустое то вы возвращем поиск фильмов, если пустое то выводим список фильмов
   Future<PopularMovieResponse> _loadMovies(int nextPage, String locale) async {
-    return _apiClient.popularMovie(nextPage, locale);
+    final query = _searchQuery;
+    if (query == null) {
+      return _apiClient.popularMovie(nextPage, locale);
+    } else {
+      return _apiClient.searchMovie(nextPage, locale, query);
+    }
   }
 
   Future<void> _loadNextPage() async {
@@ -66,6 +79,20 @@ class MovieListModel extends ChangeNotifier {
     } catch (e) {
       _isLoadingInProgress = !_isLoadingInProgress;
     }
+  }
+
+  // добавляем методы для поиска фильмов
+  Future<void> searchMovie(String text) async {
+    // если не добавить кэнсел, таймер будет вызываться столько раз,
+    // сколько букв в слове, а так при вводе новой буквы
+    // мы отменяем таймер и потом по новой его запускаем
+    searchDelay?.cancel();
+    searchDelay = Timer(Duration(milliseconds: 200), () async {
+      final searchQuery = text.isNotEmpty ? text : null;
+      if (_searchQuery == searchQuery) return;
+      _searchQuery = searchQuery;
+      await resetList();
+    });
   }
 
   void showedMovieAtIndex(int index) {
