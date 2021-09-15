@@ -7,8 +7,8 @@ class RadialPercentWidget extends StatelessWidget {
   final Widget child;
   final double percent;
   final Color fillColor;
-  final Color lineColor;
-  final Color freeColor;
+  late final Color lineColor;
+  late final  Color freeColor;
   final double lineWidth;
 
   RadialPercentWidget({
@@ -16,16 +16,23 @@ class RadialPercentWidget extends StatelessWidget {
     required this.child,
     required this.percent,
     required this.fillColor,
-    required this.lineColor,
-    required this.freeColor,
+    // required this.lineColor,
+    // required this.freeColor,
     required this.lineWidth,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    //ошибка с этим полем оно было в в классе ниже изза чего ошибка когда
-    //происходил метод билд значение пронцента всегда делились на 100
-    //и если 3 раза поделить то будет ниже нуля вот по этому и была перерисовка
+    if (percent >= 75) {
+      lineColor = _PBCM.greenMark;
+      freeColor = _PBCM.greenFree;
+    } else if (percent < 75 && percent >= 40) {
+      lineColor = _PBCM.yellowMark;
+      freeColor = _PBCM.yellowFree;
+    } else {
+      lineColor = _PBCM.redMark;
+      freeColor = _PBCM.redFree;
+    }
     final mypercent = percent / 100;
     return Stack(
       fit: StackFit.expand,
@@ -126,4 +133,13 @@ class _RadialPercentPainter extends CustomPainter {
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
     return true;
   }
+}
+
+abstract class _PBCM {
+  static const Color yellowMark = Color.fromARGB(255, 210, 213, 49);
+  static const Color yellowFree = Color.fromARGB(255, 66, 61, 15);
+  static const Color redMark = Color.fromARGB(255, 219, 35, 96);
+  static const Color redFree = Color.fromARGB(255, 87, 20, 53);
+  static const Color greenMark = Color.fromARGB(255, 32, 199, 117);
+  static const Color greenFree = Color.fromARGB(255, 32, 69, 41);
 }

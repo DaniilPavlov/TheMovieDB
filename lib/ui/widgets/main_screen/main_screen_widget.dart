@@ -33,29 +33,38 @@ class _MainScreenWidgetState extends State<MainScreenWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final model = NotifierProvider.read<MainScreenModel>(context);
+    final model = NotifierProvider.readFromModel<MainScreenModel>(context);
     print(model);
     return Scaffold(
-        appBar: AppBar(
-          title: Text('TMDB'),
-        ),
-        bottomNavigationBar: BottomNavigationBar(
-          currentIndex: _selectedTab,
-          items: [
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'News'),
-            BottomNavigationBarItem(icon: Icon(Icons.movie), label: 'Films'),
-            BottomNavigationBarItem(icon: Icon(Icons.tv), label: 'Series'),
-          ],
-          onTap: onSelectTab,
-        ),
+      appBar: AppBar(
+        title: Text('TMDB'),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedTab,
+        items: [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'News'),
+          BottomNavigationBarItem(icon: Icon(Icons.movie), label: 'Films'),
+          BottomNavigationBarItem(icon: Icon(Icons.tv), label: 'Series'),
+        ],
+        onTap: onSelectTab,
+      ),
 
-        ///сразу все прогружаем и храним 3 страницы, не делаем лишних
-        ///запросов в сеть, но задействуем много памяти
-        body: IndexedStack(index: _selectedTab, children: [
+      ///сразу все прогружаем и храним 3 страницы, не делаем лишних
+      ///запросов в сеть, но задействуем много памяти
+      body: IndexedStack(
+        index: _selectedTab,
+        children: [
           ExamplePaletteGenerator(),
-          NotifierProvider(model: movieListModel, child: MovieListWidget()),
+          NotifierProvider(
+            create: () => movieListModel,
+            child: const MovieListWidget(),
+            //указываем что виджет управляется не сам
+            isManagingModel: false,
+          ),
           const SerialsListWidget(),
-        ]));
+        ],
+      ),
+    );
   }
 }
 

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:themoviedb/domain/entity/movie_details.dart';
 import 'package:themoviedb/domain/entity/popular_movie_response.dart';
 
 // перечисление ошибок
@@ -182,7 +183,6 @@ class ApiClient {
     return result;
   }
 
-
   // Поиск для него подходит такая же обработка как и для популярных фильмов
   // так что будем использовать и ее модель
   Future<PopularMovieResponse> searchMovie(
@@ -205,8 +205,29 @@ class ApiClient {
     );
     return result;
   }
-  
 
+  // параметры которые принимает фьюча написана на странице с tmdb get movie
+  // муви айди и язык
+  Future<MovieDetails> movieDetails(
+    int movieId,
+    String locale,
+  ) async {
+    final parser = (dynamic json) {
+      final jsonMap = json as Map<String, dynamic>;
+      final response = MovieDetails.fromJson(jsonMap);
+      return response;
+    };
+    final result = _get(
+      '/movie/$movieId',
+      parser,
+      <String, dynamic>{
+        // 'append_to_response': 'credits,videos',
+        'api_key': _apiKey,
+        'language': locale,
+      },
+    );
+    return result;
+  }
 }
 
 extension HttpClientResponseJsonDecode on HttpClientResponse {

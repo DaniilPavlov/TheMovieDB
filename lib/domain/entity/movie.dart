@@ -1,5 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 
+import 'movie_date_parser.dart';
+
 part 'movie.g.dart';
 
 //переводит поля в снейк кейс когда парсит json
@@ -15,7 +17,7 @@ class Movie {
 
   //release_date format = "2016-06-03"
   //но на сайте иногда бывает пустая строка в дате, поэтому добавляем ключ
-  @JsonKey(fromJson: _parseMovieDateFromString)
+  @JsonKey(fromJson: parseMovieDateFromString)
   final DateTime? releaseDate;
   final List<int> genreIds;
   final int id;
@@ -44,12 +46,6 @@ class Movie {
     required this.video,
     required this.voteAverage,
   });
-
-  //из-за проблем MOVIE DB API обрабатываем дату сами
-  static DateTime? _parseMovieDateFromString(String? rawDate) {
-    if (rawDate == null || rawDate.isEmpty) return null;
-    return DateTime.tryParse(rawDate);
-  }
 
   factory Movie.fromJson(Map<String, dynamic> json) => _$MovieFromJson(json);
 
