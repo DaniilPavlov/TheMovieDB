@@ -1,4 +1,3 @@
-
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -8,7 +7,7 @@ class RadialPercentWidget extends StatelessWidget {
   final double percent;
   final Color fillColor;
   late final Color lineColor;
-  late final  Color freeColor;
+  late final Color freeColor;
   final double lineWidth;
 
   RadialPercentWidget({
@@ -125,7 +124,7 @@ class _RadialPercentPainter extends CustomPainter {
   Rect _calculateCirclesRect(Size size) {
     final offset = lineWidth / 2;
     final rect = Offset(offset, offset) &
-    Size(size.width - lineWidth, size.height - lineWidth);
+        Size(size.width - lineWidth, size.height - lineWidth);
     return rect;
   }
 

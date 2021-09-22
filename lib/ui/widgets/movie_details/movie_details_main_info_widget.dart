@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:themoviedb/Library/Widgets/inherited/provider.dart';
 import 'package:themoviedb/Theme/app_colors.dart';
+import 'package:themoviedb/domain/entity/movie_details_credits.dart';
 
 import '../custom_progress_bar_widget.dart';
 import 'movie_details_model.dart';
@@ -332,54 +333,103 @@ class _ReviewWidget extends StatelessWidget {
               ),
         Padding(
           padding: const EdgeInsets.only(top: 30),
-          child: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Dan Harmon',
-                      style: TextStyle(
-                        color: AppColors.titleColorMovieDetail,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    Text(
-                      'Создатель',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: AppColors.titleColorMovieDetail,
-                      ),
-                    )
-                  ],
-                ),
-              ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Justin Roiland',
-                      style: TextStyle(
-                        color: AppColors.titleColorMovieDetail,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    Text(
-                      'Создатель',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: AppColors.titleColorMovieDetail,
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ],
-          ),
+          child: _DirectorWidget(),
+        )
+      ],
+    );
+  }
+}
+
+class _DirectorWidget extends StatelessWidget {
+  const _DirectorWidget({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final model = NotifierProvider.watchOnModel<MovieDetailsModel>(context);
+
+    var crew = model?.movieDetails?.credits.crew;
+
+    //если нет актеров
+    if (crew == null || crew.isEmpty) return const SizedBox.shrink();
+    //сортировка по популярности
+    crew.sort((a, b) => b.popularity.compareTo(a.popularity));
+    //выводим лишь главных актеров
+    //саблист копирует до финального НЕ включительно
+    if (crew.length > 4) crew = crew.sublist(0, 4);
+    final crewWidget = crew
+        .map((employee) => EmployeeWidget(
+              employee: employee,
+            ))
+        .toList();
+    // return Row(children: crewWidget);
+    // return SizedBox.shrink();
+    return SizedBox(
+        height: 160,
+        child: GridView.count(
+          physics: new NeverScrollableScrollPhysics(),
+          // shrinkWrap: true,
+          // primary: false,
+          padding: const EdgeInsets.all(10),
+          childAspectRatio: 2,
+          // crossAxisSpacing: 10,
+          // mainAxisSpacing: 10,
+          crossAxisCount: 2,
+          children: crewWidget,
+        ));
+    // return SizedBox(
+    //   height: 100,
+    //   width: double.infinity,
+    //   child: Wrap(
+    //     direction: Axis.horizontal,
+    //     children: crewWidget,
+    //   ),
+    // );
+    // return SizedBox(
+    //   width: double.infinity,
+    //   child: Row(
+    //     children: [
+    //       Column(
+    //         crossAxisAlignment: CrossAxisAlignment.start,
+    //         children: crewWidget,
+    //       ),
+    //     ],
+    //   ),
+    // );
+  }
+}
+
+class EmployeeWidget extends StatelessWidget {
+  //const
+  EmployeeWidget({
+    Key? key,
+    required this.employee,
+  }) : super(key: key);
+
+  final Employee employee;
+  @override
+  Widget build(BuildContext context) {
+    final nameStyle = TextStyle(
+      fontSize: 14,
+      fontWeight: FontWeight.w700,
+      color: AppColors.titleColorMovieDetail,
+    );
+    final creatorStyle = TextStyle(
+      fontSize: 14,
+      color: AppColors.titleColorMovieDetail,
+    );
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          employee.job,
+          overflow: TextOverflow.ellipsis,
+          style: creatorStyle,
+        ),
+        Text(
+          employee.name,
+          style: nameStyle,
         )
       ],
     );

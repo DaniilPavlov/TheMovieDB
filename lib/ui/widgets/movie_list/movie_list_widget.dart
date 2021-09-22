@@ -17,7 +17,7 @@ class MovieListWidget extends StatelessWidget {
 
           ///если мы что-то ввели и начали скролл - клавиатура уйдет
           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-          itemCount: model.movies.length ?? 0,
+          itemCount: model.movies.length,
           itemExtent: 163,
           itemBuilder: (BuildContext context, int index) {
             model.showedMovieAtIndex(index);
