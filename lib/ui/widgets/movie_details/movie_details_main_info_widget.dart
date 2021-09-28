@@ -148,10 +148,10 @@ class _ScoreWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final model = NotifierProvider.watchOnModel<MovieDetailsModel>(context);
     final score = model?.movieDetails?.voteAverage;
-    // final videos = model?.movieDetails?.videos.results
-    //     .where((video) => video.type == 'Trailer' && video.site == 'YouTube');
-    // final trailerKey = videos?.isNotEmpty == true ? videos?.first.key : null;
-    final trailerKey = 1;
+    final videos = model?.movieDetails?.videos.results
+        .where((video) => video.type == 'Trailer' && video.site == 'YouTube');
+        //чтобы отобразить видео нам нужен ключ
+    final trailerKey = videos?.isNotEmpty == true ? videos?.first.key : null;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       child: Row(
@@ -206,8 +206,7 @@ Score''',
           trailerKey != null
               ? TextButton(
                   style: TextButton.styleFrom(padding: EdgeInsets.zero),
-                  onPressed: () {},
-                  // onPressed: () => model?.onTrailerTap(context, trailerKey),
+                  onPressed: () => model?.onTrailerTap(context, trailerKey),
                   child: Row(
                     children: [
                       Icon(

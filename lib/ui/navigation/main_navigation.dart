@@ -6,13 +6,13 @@ import 'package:themoviedb/ui/widgets/main_screen/main_screen_model.dart';
 import 'package:themoviedb/ui/widgets/main_screen/main_screen_widget.dart';
 import 'package:themoviedb/ui/widgets/movie_details/movie_details_model.dart';
 import 'package:themoviedb/ui/widgets/movie_details/movie_details_widget.dart';
+import 'package:themoviedb/ui/widgets/movie_details/movie_trailer_widget.dart';
 
 abstract class MainNavigationRouteNames {
   static const auth = 'auth';
   static const mainScreen = '/';
   static const movieDetails = '/movie_details';
   static const movieTrailer = '/movie_details/trailer';
-  static const example = 'example_screen';
 }
 
 // утащим роуты для удобного использования в отдельный файл
@@ -43,12 +43,12 @@ class MainNavigation {
             builder: (context) => NotifierProvider(
                 create: () => MovieDetailsModel(movieId),
                 child: MovieDetailsWidget()));
-      // case MainNavigationRouteNames.movieTrailer:
-      //   final arguments = settings.arguments;
-      //   final youTubeKey = arguments is String ? arguments : '';
-      //   return MaterialPageRoute(
-      //     builder: (context) => MovieTrailerWidget(youTubeKey: youTubeKey),
-      //   );
+      case MainNavigationRouteNames.movieTrailer:
+        final arguments = settings.arguments;
+        final youTubeKey = arguments is String ? arguments : '';
+        return MaterialPageRoute(
+          builder: (context) => MovieTrailerWidget(youTubeKey: youTubeKey),
+        );
       default:
         const widget = Text('Navigation error');
         return MaterialPageRoute(builder: (context) => widget);

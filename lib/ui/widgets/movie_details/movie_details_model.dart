@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:themoviedb/domain/api_client/api_client.dart';
 import 'package:themoviedb/domain/entity/movie_details.dart';
+import 'package:themoviedb/ui/navigation/main_navigation.dart';
 
 class MovieDetailsModel extends ChangeNotifier {
   final _apiClient = ApiClient();
@@ -67,7 +68,7 @@ class MovieDetailsModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  //загрузка цветта экрана
+  //загрузка цвета экрана
   Future<void> createColor(Image? img) async {
     PaletteGenerator generator;
     if (img == null) return;
@@ -77,6 +78,11 @@ class MovieDetailsModel extends ChangeNotifier {
       return;
     }
     return;
+  }
+
+  void onTrailerTap(BuildContext context, String trailerKey) {
+    Navigator.of(context).pushNamed(MainNavigationRouteNames.movieTrailer,
+        arguments: trailerKey);
   }
 
 }

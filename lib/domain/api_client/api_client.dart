@@ -224,7 +224,7 @@ class ApiClient {
         //нам нужно отправить доп запрос, но мы може к запросу фильма добавить
         //аппенд ту респонс и добавить еще запрос, чтобы не создавать
         //2 отдельных запроса
-        'append_to_response': 'credits',
+        'append_to_response': 'credits,videos',
         'api_key': _apiKey,
         'language': locale,
       },

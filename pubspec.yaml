@@ -32,6 +32,7 @@ dependencies:
   intl: ^0.17.0 #отвечает за парсинг дат
   cupertino_icons: ^1.0.2
   palette_generator:
+  youtube_player_flutter: ^8.0.0
 
 dev_dependencies:
   flutter_test:

@@ -2,6 +2,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 import 'movie_date_parser.dart';
 import 'movie_details_credits.dart';
+import 'movie_details_videos.dart';
 
 part 'movie_details.g.dart';
 
@@ -43,9 +44,9 @@ class MovieDetails {
   final int voteCount;
 
   final MovieDetailsCredits credits;
-  // final MovieDetailsVideos videos;
+  final MovieDetailsVideos videos;
   MovieDetails({
-    // required this.videos,
+    required this.videos,
     required this.adult,
     required this.backdropPath,
     required this.belongsToCollection,
