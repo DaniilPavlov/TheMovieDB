@@ -77,6 +77,19 @@ class _TopPosterWidget extends StatelessWidget {
               ),
             ),
           ),
+          Positioned(
+            top: 5,
+            right: 5,
+            child: IconButton(
+              icon: Icon(
+                model?.isFavorite == true
+                    ? Icons.favorite
+                    : Icons.favorite_border_sharp,
+                color: Colors.white,
+              ),
+              onPressed: () => model?.onFavoriteTap(),
+            ),
+          ),
         ],
       ),
     );
@@ -150,7 +163,7 @@ class _ScoreWidget extends StatelessWidget {
     final score = model?.movieDetails?.voteAverage;
     final videos = model?.movieDetails?.videos.results
         .where((video) => video.type == 'Trailer' && video.site == 'YouTube');
-        //чтобы отобразить видео нам нужен ключ
+    //чтобы отобразить видео нам нужен ключ
     final trailerKey = videos?.isNotEmpty == true ? videos?.first.key : null;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),

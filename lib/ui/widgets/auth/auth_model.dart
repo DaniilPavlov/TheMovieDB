@@ -27,19 +27,21 @@ class AuthModel extends ChangeNotifier {
     final login = loginTextController.text;
     final password = passwordTextController.text;
     if (login.isEmpty || password.isEmpty) {
-      print('auth login and password not secure');
+      print('auth login or password wasnt typed');
       _errorMessage = "Заполните логин и пароль";
       notifyListeners();
       return;
     }
-    print('not empty');
     _isAuthProgress = true;
     _errorMessage = null;
     notifyListeners();
     String? sessionId;
+    int? accountId;
     try {
       sessionId = await _apiClient.auth(username: login, password: password);
+      accountId = await _apiClient.getAccountInfo(sessionId);
       print('$sessionId');
+      print('$accountId');
     } on ApiClientException catch (e) {
       switch (e.type) {
         case ApiClientExceptionType.Network:
@@ -60,12 +62,13 @@ class AuthModel extends ChangeNotifier {
       notifyListeners();
       return;
     }
-    if (sessionId == null) {
+    if (sessionId == null || accountId == null) {
       _errorMessage = 'Не получен id сессии';
       notifyListeners();
       return;
     }
     await _sessionDataProvider.setSessionId(sessionId);
+    await _sessionDataProvider.setAccountId(accountId);
 
     // Navigator.of(context).pushNamed('/main_screen');
     // Navigator.of(context).pushNamed(RouteScreen.mainScreen);

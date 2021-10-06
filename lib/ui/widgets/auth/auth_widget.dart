@@ -154,9 +154,9 @@ class _AuthButtonWidget extends StatelessWidget {
     final model = NotifierProvider.watchOnModel<AuthModel>(context);
     if (model?.canStartAuth == true) {
       model?.auth(context);
-      print('answ Yes');
+      print('can start auth');
     } else {
-      print('answ No');
+      print('cant start auth');
     }
   }
 

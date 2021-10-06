@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:themoviedb/domain/api_client/api_client.dart';
+import 'package:themoviedb/domain/data_providers/session_data_provider.dart';
 import 'package:themoviedb/domain/entity/movie_details.dart';
 import 'package:themoviedb/ui/navigation/main_navigation.dart';
 
 class MovieDetailsModel extends ChangeNotifier {
+  final _sessionDataProvider = SessionDataProvider();
   final _apiClient = ApiClient();
 
   final int movieId;
@@ -59,6 +61,11 @@ class MovieDetailsModel extends ChangeNotifier {
   Future<void> loadDetails() async {
     _movieDetails = await _apiClient.movieDetails(movieId, _locale);
 
+    final sessionId = await SessionDataProvider().getSessionId();
+    if (sessionId != null) {
+      _isFavorite = await _apiClient.isFavorite(movieId, sessionId);
+    }
+
     final _front = _movieDetails?.posterPath;
     _front != null ? _poster = await _downloadImage(_front) : _poster = null;
     final _back = _movieDetails?.backdropPath;
@@ -85,4 +92,20 @@ class MovieDetailsModel extends ChangeNotifier {
         arguments: trailerKey);
   }
 
+  Future<void> onFavoriteTap() async {
+    final sessionId = await _sessionDataProvider.getSessionId();
+    final accountId = await _sessionDataProvider.getAccountId();
+    if (sessionId == null || accountId == null) return;
+
+    // print(_isFavorite);
+    _apiClient.markAsFavorite(
+        accountId: accountId,
+        sessionId: sessionId,
+        mediaType: MediaType.Movie,
+        mediaId: movieId,
+        isFavorite: !isFavorite);
+
+    _isFavorite = !_isFavorite;
+    notifyListeners();
+  }
 }

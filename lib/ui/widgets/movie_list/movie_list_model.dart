@@ -73,7 +73,7 @@ class MovieListModel extends ChangeNotifier {
       _movies.addAll(responseMovies.movies);
       _currentPage = responseMovies.page;
       _totalPage = responseMovies.totalPages;
-      print(_totalPage);
+      print('number of films is $_totalPage');
       _isLoadingInProgress = !_isLoadingInProgress;
       notifyListeners();
     } catch (e) {
