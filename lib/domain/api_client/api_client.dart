@@ -5,7 +5,7 @@ import 'package:themoviedb/domain/entity/movie_details.dart';
 import 'package:themoviedb/domain/entity/popular_movie_response.dart';
 
 // перечисление ошибок
-enum ApiClientExceptionType { Network, Auth, Other }
+enum ApiClientExceptionType { Network, Auth, Other, SessionExpired }
 
 //Создаем класс ошибок для этого имплементируем класс Exception
 class ApiClientException implements Exception {
@@ -191,6 +191,8 @@ class ApiClient {
       final code = status is int ? status : 0;
       if (code == 30) {
         throw ApiClientException(ApiClientExceptionType.Auth);
+      } else if (code == 3) {
+        throw ApiClientException(ApiClientExceptionType.SessionExpired);
       } else {
         throw ApiClientException(ApiClientExceptionType.Other);
       }

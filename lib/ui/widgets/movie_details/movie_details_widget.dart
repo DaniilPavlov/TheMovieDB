@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:themoviedb/Library/Widgets/inherited/provider.dart';
 import 'package:themoviedb/Theme/app_colors.dart';
+import 'package:themoviedb/ui/widgets/app/my_app_model.dart';
 
 import 'movie_details_main_info_widget.dart';
 import 'movie_details_model.dart';
@@ -14,6 +15,14 @@ class MovieDetailsWidget extends StatefulWidget {
 }
 
 class _MovieDetailsWidgetState extends State<MovieDetailsWidget> {
+  @override
+  void initState() {
+    super.initState();
+    final model = NotifierProvider.readFromModel<MovieDetailsModel>(context);
+    final appModel = Provider.read<MyAppModel>(context);
+    model?.onSessionExpired = () => appModel?.resetSession(context);
+  }
+
   @override
   void didChangeDependencies() {
     //получаем нашу модель и выполняем сетап локаль и таким

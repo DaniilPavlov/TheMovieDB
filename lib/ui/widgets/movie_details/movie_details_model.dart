@@ -22,6 +22,8 @@ class MovieDetailsModel extends ChangeNotifier {
 
   late bool _isFavorite;
 
+  Future<void>? Function()? onSessionExpired;
+
   bool get isFavorite => _isFavorite;
 
   MovieDetailsModel(
@@ -59,20 +61,26 @@ class MovieDetailsModel extends ChangeNotifier {
       date != null ? _dateFormat.format(date) : '';
 
   Future<void> loadDetails() async {
-    _movieDetails = await _apiClient.movieDetails(movieId, _locale);
+    try {
+      _movieDetails = await _apiClient.movieDetails(movieId, _locale);
 
-    final sessionId = await SessionDataProvider().getSessionId();
-    if (sessionId != null) {
-      _isFavorite = await _apiClient.isFavorite(movieId, sessionId);
+      final sessionId = await SessionDataProvider().getSessionId();
+      if (sessionId != null) {
+        _isFavorite = await _apiClient.isFavorite(movieId, sessionId);
+      }
+
+      final _front = _movieDetails?.posterPath;
+      _front != null ? _poster = await _downloadImage(_front) : _poster = null;
+      final _back = _movieDetails?.backdropPath;
+      _back != null
+          ? _backDrop = await _downloadImage(_back)
+          : _backDrop = null;
+      _loading = false;
+      await createColor(poster);
+      notifyListeners();
+    } on ApiClientException catch (e) {
+      _handleApiClientException(e);
     }
-
-    final _front = _movieDetails?.posterPath;
-    _front != null ? _poster = await _downloadImage(_front) : _poster = null;
-    final _back = _movieDetails?.backdropPath;
-    _back != null ? _backDrop = await _downloadImage(_back) : _backDrop = null;
-    _loading = false;
-    await createColor(poster);
-    notifyListeners();
   }
 
   //загрузка цвета экрана
@@ -98,14 +106,30 @@ class MovieDetailsModel extends ChangeNotifier {
     if (sessionId == null || accountId == null) return;
 
     // print(_isFavorite);
-    _apiClient.markAsFavorite(
-        accountId: accountId,
-        sessionId: sessionId,
-        mediaType: MediaType.Movie,
-        mediaId: movieId,
-        isFavorite: !isFavorite);
-
+    try {
+      _apiClient.markAsFavorite(
+          accountId: accountId,
+          sessionId: sessionId,
+          mediaType: MediaType.Movie,
+          mediaId: movieId,
+          isFavorite: !isFavorite);
+    } on ApiClientException catch (e) {
+      _handleApiClientException(e);
+    }
     _isFavorite = !_isFavorite;
     notifyListeners();
+  }
+
+
+// если токен авторизации устаревает, пользователя выкидывает на экран
+// авторизации
+  void _handleApiClientException(ApiClientException exception) {
+    switch (exception.type) {
+      case ApiClientExceptionType.SessionExpired:
+        onSessionExpired?.call();
+        break;
+      default:
+        print(exception);
+    }
   }
 }
