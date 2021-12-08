@@ -15,8 +15,8 @@ class MovieDetailsMainScreenCastWidget extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 20),
+            const Padding(
+              padding: EdgeInsets.only(left: 20),
               child: Text(
                 'Актерский состав сериала',
                 style: TextStyle(
@@ -25,10 +25,10 @@ class MovieDetailsMainScreenCastWidget extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 260,
               child: Scrollbar(
-                child: const _ActorListWidget(),
+                child: _ActorListWidget(),
               ),
             ),
             Padding(
@@ -36,7 +36,7 @@ class MovieDetailsMainScreenCastWidget extends StatelessWidget {
               child: TextButton(
                 style: TextButton.styleFrom(padding: EdgeInsets.zero),
                 onPressed: () {},
-                child: Text(
+                child: const Text(
                   'Полный актерский и съёмочный состав',
                   style: TextStyle(
                     fontSize: 17,
@@ -97,7 +97,7 @@ class _ActorListItemWidget extends StatelessWidget {
           border: Border.all(
             color: Colors.black.withOpacity(0.2),
           ),
-          borderRadius: BorderRadius.all(
+          borderRadius: const BorderRadius.all(
             Radius.circular(6),
           ),
         ),
@@ -106,12 +106,13 @@ class _ActorListItemWidget extends StatelessWidget {
           children: [
             profilePath != null
                 ? Image.network(ApiClient.imageUrl(profilePath))
-                : SizedBox.shrink(),
+                : const SizedBox.shrink(),
             Padding(
               padding: const EdgeInsets.only(left: 5, top: 5, right: 5),
               child: Text(
                 actor.name,
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
+                style:
+                    const TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
               ),
             ),
             Expanded(
@@ -120,7 +121,7 @@ class _ActorListItemWidget extends StatelessWidget {
                 child: Text(
                   actor.character,
                   overflow: TextOverflow.fade,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 13,
                   ),
                   maxLines: 4,

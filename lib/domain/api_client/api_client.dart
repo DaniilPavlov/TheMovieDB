@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:themoviedb/domain/entity/movie_details.dart';
-import 'package:themoviedb/domain/entity/popular_movie_response.dart';
+import 'package:themoviedb/domain/entities/movie_details.dart';
+import 'package:themoviedb/domain/entities/popular_movie_response.dart';
 
 // перечисление ошибок
 enum ApiClientExceptionType { Network, Auth, Other, SessionExpired }

@@ -11,7 +11,7 @@ import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 // И сделал навигацию
 class MovieTrailerWidget extends StatefulWidget {
   final String youTubeKey;
-  MovieTrailerWidget({Key? key, required this.youTubeKey}) : super(key: key);
+  const MovieTrailerWidget({Key? key, required this.youTubeKey}) : super(key: key);
 
   @override
   _MovieTrailerWidgetState createState() => _MovieTrailerWidgetState();
@@ -40,7 +40,7 @@ class _MovieTrailerWidgetState extends State<MovieTrailerWidget> {
       builder: (context, player) {
         return Scaffold(
           appBar: AppBar(
-            title: Text('Trailer'),
+            title: const Text('Trailer'),
           ),
           body: Center(
             child: player,

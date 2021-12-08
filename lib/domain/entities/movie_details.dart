@@ -1,8 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
-
-import 'movie_date_parser.dart';
-import 'movie_details_credits.dart';
-import 'movie_details_videos.dart';
+import 'package:themoviedb/domain/entities/movie_date_parser.dart';
+import 'package:themoviedb/domain/entities/movie_details_credits.dart';
+import 'package:themoviedb/domain/entities/movie_details_videos.dart';
 
 part 'movie_details.g.dart';
 

@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:themoviedb/Library/Widgets/inherited/provider.dart';
 import 'package:themoviedb/Theme/app_colors.dart';
-import 'package:themoviedb/domain/entity/movie_details_credits.dart';
-
-import '../custom_progress_bar_widget.dart';
-import 'movie_details_model.dart';
+import 'package:themoviedb/domain/entities/movie_details_credits.dart';
+import 'package:themoviedb/ui/widgets/custom_progress_bar_widget.dart';
+import 'package:themoviedb/ui/widgets/movie_details/movie_details_model.dart';
 
 class MovieDetailsMainInfoWidget extends StatelessWidget {
   const MovieDetailsMainInfoWidget({Key? key}) : super(key: key);
@@ -14,16 +13,16 @@ class MovieDetailsMainInfoWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       mainAxisAlignment: MainAxisAlignment.end,
-      children: [
+      children: const [
         _TopPosterWidget(),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+          padding: EdgeInsets.symmetric(horizontal: 8, vertical: 10),
           child: _MovieNameWidget(),
         ),
         _ScoreWidget(),
         _SummeryWidget(),
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+          padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
           child: _ReviewWidget(),
         ),
       ],
@@ -37,7 +36,7 @@ class _TopPosterWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final model = NotifierProvider.watchOnModel<MovieDetailsModel>(context);
-    if (model?.backDrop == null) return SizedBox.shrink();
+    if (model?.backDrop == null) return const SizedBox.shrink();
     // обернули стек в аспект ратио для того, чтобы страница не прыгала
     // после загрузки инфомарции. Мы сразу выделяем место на экране
     // под изображение. Ратио высчитан сам (1.8)
@@ -50,7 +49,7 @@ class _TopPosterWidget extends StatelessWidget {
           ShaderMask(
             //добавление краски на топ изображение фильма
             shaderCallback: (rect) {
-              return LinearGradient(
+              return const LinearGradient(
                 colors: [
                   Colors.black,
                   Colors.transparent,
@@ -103,7 +102,7 @@ class LinearGradientWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DecoratedBox(
+    return const DecoratedBox(
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
@@ -134,14 +133,14 @@ class _MovieNameWidget extends StatelessWidget {
           children: [
             TextSpan(
               text: model?.movieDetails?.title ?? '',
-              style: TextStyle(
+              style: const TextStyle(
                   fontWeight: FontWeight.w800,
                   fontSize: 17,
                   color: AppColors.titleColorMovieDetail),
             ),
             TextSpan(
                 text: year,
-                style: TextStyle(
+                style: const TextStyle(
                     color: AppColors.summaryDateMovieDetail,
                     fontWeight: FontWeight.w400,
                     fontSize: 14)),
@@ -185,7 +184,7 @@ class _ScoreWidget extends StatelessWidget {
                         score != null
                             ? '${(10 * score).toInt().toString()}%'
                             : '',
-                        style: TextStyle(
+                        style: const TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.w400,
                             fontSize: 13),
@@ -236,7 +235,7 @@ Score''',
                     ],
                   ),
                 )
-              : SizedBox.shrink(),
+              : const SizedBox.shrink(),
         ],
       ),
     );
@@ -335,7 +334,7 @@ class _ReviewWidget extends StatelessWidget {
           ),
         ),
         overview == ''
-            ? SizedBox.shrink()
+            ? const SizedBox.shrink()
             : Text(
                 overview,
                 style: TextStyle(
@@ -343,8 +342,8 @@ class _ReviewWidget extends StatelessWidget {
                   color: model?.getColorList.darkVibrantColor?.bodyTextColor,
                 ),
               ),
-        Padding(
-          padding: const EdgeInsets.only(top: 30),
+        const Padding(
+          padding: EdgeInsets.only(top: 30),
           child: _DirectorWidget(),
         )
       ],
@@ -380,7 +379,7 @@ class _DirectorWidget extends StatelessWidget {
     return SizedBox(
         height: 160,
         child: GridView.count(
-          physics: new NeverScrollableScrollPhysics(),
+          physics:  const NeverScrollableScrollPhysics(),
           // shrinkWrap: true,
           // primary: false,
           padding: const EdgeInsets.all(10),
@@ -413,8 +412,7 @@ class _DirectorWidget extends StatelessWidget {
 }
 
 class EmployeeWidget extends StatelessWidget {
-  //const
-  EmployeeWidget({
+  const EmployeeWidget({
     Key? key,
     required this.employee,
   }) : super(key: key);
@@ -422,12 +420,12 @@ class EmployeeWidget extends StatelessWidget {
   final Employee employee;
   @override
   Widget build(BuildContext context) {
-    final nameStyle = TextStyle(
+    const nameStyle = TextStyle(
       fontSize: 14,
       fontWeight: FontWeight.w700,
       color: AppColors.titleColorMovieDetail,
     );
-    final creatorStyle = TextStyle(
+    const creatorStyle = TextStyle(
       fontSize: 14,
       color: AppColors.titleColorMovieDetail,
     );

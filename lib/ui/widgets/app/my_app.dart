@@ -1,28 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:themoviedb/Library/Widgets/inherited/provider.dart';
 import 'package:themoviedb/Theme/app_colors.dart';
 import 'package:themoviedb/ui/navigation/main_navigation.dart';
 
-import 'my_app_model.dart';
-
 class MyApp extends StatelessWidget {
   static final mainNavigation = MainNavigation();
-  // final MyAppModel model;
   const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final model = Provider.read<MyAppModel>(context);
     return MaterialApp(
       title: 'The Movie DB',
       theme: ThemeData(
-        appBarTheme: AppBarTheme(
+        appBarTheme: const AppBarTheme(
             centerTitle: true,
             backgroundColor:
                 AppColors.mainDarkBlue), // установили в тему значение цвета
         primarySwatch: Colors.blue,
-        bottomNavigationBarTheme: BottomNavigationBarThemeData(
+        bottomNavigationBarTheme: const BottomNavigationBarThemeData(
             backgroundColor: AppColors.mainDarkBlue,
             selectedItemColor: Colors.white,
             unselectedItemColor: Colors.grey),
@@ -37,7 +32,7 @@ class MyApp extends StatelessWidget {
         Locale('ru', 'RU'),
       ],
       routes: mainNavigation.routes,
-      initialRoute: mainNavigation.initialRoute(model?.isAuth == true),
+      initialRoute: MainNavigationRouteNames.loaderWidget,
       onGenerateRoute: mainNavigation.onGenerateRoute,
     );
   }

@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:themoviedb/Library/Widgets/inherited/provider.dart';
 import 'package:themoviedb/Theme/app_colors.dart';
 import 'package:themoviedb/ui/widgets/app/my_app_model.dart';
-
-import 'movie_details_main_info_widget.dart';
-import 'movie_details_model.dart';
-import 'movie_details_screen_cast_widget.dart';
+import 'package:themoviedb/ui/widgets/movie_details/movie_details_main_info_widget.dart';
+import 'package:themoviedb/ui/widgets/movie_details/movie_details_model.dart';
+import 'package:themoviedb/ui/widgets/movie_details/movie_details_screen_cast_widget.dart';
 
 class MovieDetailsWidget extends StatefulWidget {
   const MovieDetailsWidget({Key? key}) : super(key: key);
@@ -53,16 +52,17 @@ class _BodyWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final model = NotifierProvider.watchOnModel<MovieDetailsModel>(context);
-    if (model?.isLoading == true)
-      return Center(
-        child: const CircularProgressIndicator(),
+    if (model?.isLoading == true) {
+      return const Center(
+        child: CircularProgressIndicator(),
       );
+    }
     return ColoredBox(
       color: AppColors.blackBackgroundMovieDetail,
       child: ListView(
-        children: [
-          const MovieDetailsMainInfoWidget(),
-          const MovieDetailsMainScreenCastWidget(),
+        children: const [
+          MovieDetailsMainInfoWidget(),
+          MovieDetailsMainScreenCastWidget(),
         ],
       ),
     );

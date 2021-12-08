@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:themoviedb/domain/api_client/api_client.dart';
-import 'package:themoviedb/domain/entity/movie.dart';
-import 'package:themoviedb/domain/entity/popular_movie_response.dart';
+import 'package:themoviedb/domain/entities/movie.dart';
+import 'package:themoviedb/domain/entities/popular_movie_response.dart';
 import 'package:themoviedb/ui/navigation/main_navigation.dart';
 
 class MovieListModel extends ChangeNotifier {
@@ -87,7 +87,7 @@ class MovieListModel extends ChangeNotifier {
     // сколько букв в слове, а так при вводе новой буквы
     // мы отменяем таймер и потом по новой его запускаем
     searchDelay?.cancel();
-    searchDelay = Timer(Duration(milliseconds: 200), () async {
+    searchDelay = Timer(const Duration(milliseconds: 200), () async {
       final searchQuery = text.isNotEmpty ? text : null;
       if (_searchQuery == searchQuery) return;
       _searchQuery = searchQuery;

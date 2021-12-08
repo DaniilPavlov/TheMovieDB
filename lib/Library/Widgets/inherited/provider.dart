@@ -63,7 +63,7 @@ class _NotifierProviderState<Model extends ChangeNotifier>
 class _InheritedNotifierProvider<Model extends ChangeNotifier>
     extends InheritedNotifier {
   //не забыть поменять от кого наследуется инхерит
-  _InheritedNotifierProvider(
+  const _InheritedNotifierProvider(
       {Key? key, required this.model, required this.child})
       : super(key: key, notifier: model, child: child);
 
@@ -73,7 +73,7 @@ class _InheritedNotifierProvider<Model extends ChangeNotifier>
 
 class Provider<Model> extends InheritedWidget {
   //не забыть поменять от кого наследуется инхерит
-  Provider({Key? key, required this.model, required this.child})
+  const Provider({Key? key, required this.model, required this.child})
       : super(key: key, child: child);
 
   final Model model;

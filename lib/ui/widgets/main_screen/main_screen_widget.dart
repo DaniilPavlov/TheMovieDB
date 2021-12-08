@@ -34,11 +34,11 @@ class _MainScreenWidgetState extends State<MainScreenWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('TMDB'),
+        title: const Text('TMDB'),
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedTab,
-        items: [
+        items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'News'),
           BottomNavigationBarItem(icon: Icon(Icons.movie), label: 'Films'),
           BottomNavigationBarItem(icon: Icon(Icons.tv), label: 'Series'),
@@ -51,7 +51,7 @@ class _MainScreenWidgetState extends State<MainScreenWidget> {
       body: IndexedStack(
         index: _selectedTab,
         children: [
-          ExamplePaletteGenerator(),
+          const ExamplePaletteGenerator(),
           NotifierProvider(
             create: () => movieListModel,
             child: const MovieListWidget(),
@@ -131,7 +131,7 @@ class SerialsListWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
         child: ElevatedButton(
-      child: Text('log out'),
+      child: const Text('log out'),
       onPressed: () => logOut(context),
     ));
   }

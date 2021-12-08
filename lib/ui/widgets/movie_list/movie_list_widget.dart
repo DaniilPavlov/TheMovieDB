@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:themoviedb/Library/Widgets/inherited/provider.dart';
 import 'package:themoviedb/domain/api_client/api_client.dart';
-
-import 'movie_list_model.dart';
+import 'package:themoviedb/ui/widgets/movie_list/movie_list_model.dart';
 
 class MovieListWidget extends StatelessWidget {
   const MovieListWidget({Key? key}) : super(key: key);
@@ -13,7 +12,7 @@ class MovieListWidget extends StatelessWidget {
     if (model == null) return const SizedBox.shrink();
     return Stack(children: [
       ListView.builder(
-          padding: EdgeInsets.only(top: 70),
+          padding: const EdgeInsets.only(top: 70),
 
           ///если мы что-то ввели и начали скролл - клавиатура уйдет
           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
@@ -30,12 +29,12 @@ class MovieListWidget extends StatelessWidget {
                   decoration: BoxDecoration(
                       color: Colors.white,
                       border: Border.all(color: Colors.black.withOpacity(0.2)),
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      borderRadius: const BorderRadius.all(Radius.circular(10)),
                       boxShadow: [
                         BoxShadow(
                             color: Colors.black.withOpacity(0.1),
                             blurRadius: 8,
-                            offset: Offset(0, 2))
+                            offset: const Offset(0, 2))
                       ]),
                   clipBehavior: Clip.hardEdge,
                   child: Row(children: [
@@ -44,33 +43,33 @@ class MovieListWidget extends StatelessWidget {
                             ApiClient.imageUrl(posterPath),
                             width: 95,
                           )
-                        : SizedBox.shrink(),
-                    SizedBox(
+                        : const SizedBox.shrink(),
+                    const SizedBox(
                       width: 15,
                     ),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          SizedBox(
+                          const SizedBox(
                             height: 20,
                           ),
                           Text(
                             movie.title,
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                            style: const TextStyle(fontWeight: FontWeight.bold),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 5,
                           ),
                           Text(
                             model.stringFromDate(movie.releaseDate),
-                            style: TextStyle(color: Colors.grey),
+                            style: const TextStyle(color: Colors.grey),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 20,
                           ),
                           Text(
@@ -81,7 +80,7 @@ class MovieListWidget extends StatelessWidget {
                         ],
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 10,
                     )
                   ]),
@@ -110,7 +109,7 @@ class MovieListWidget extends StatelessWidget {
                 labelText: 'Search',
                 filled: true,
                 fillColor: Colors.white.withAlpha(235),
-                border: OutlineInputBorder()),
+                border: const OutlineInputBorder()),
           ))
     ]);
   }

@@ -55,6 +55,9 @@ class AuthModel extends ChangeNotifier {
           _errorMessage = 'Ошибка сервера. Повторите запрос';
 
           break;
+        case ApiClientExceptionType.SessionExpired:
+          // TODO: Handle this case.
+          break;
       }
     }
     _isAuthProgress = false;

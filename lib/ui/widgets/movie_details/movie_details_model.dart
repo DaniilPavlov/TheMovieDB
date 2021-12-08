@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:themoviedb/domain/api_client/api_client.dart';
 import 'package:themoviedb/domain/data_providers/session_data_provider.dart';
-import 'package:themoviedb/domain/entity/movie_details.dart';
+import 'package:themoviedb/domain/entities/movie_details.dart';
 import 'package:themoviedb/ui/navigation/main_navigation.dart';
 
 class MovieDetailsModel extends ChangeNotifier {

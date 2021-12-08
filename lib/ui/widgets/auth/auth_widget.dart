@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:themoviedb/Library/Widgets/inherited/provider.dart';
 import 'package:themoviedb/Theme/app_button_style.dart';
+import 'package:themoviedb/ui/widgets/auth/auth_model.dart';
 
-import 'auth_model.dart';
+
 
 class AuthWidget extends StatefulWidget {
   const AuthWidget({Key? key}) : super(key: key);
@@ -16,10 +17,10 @@ class _AuthWidgetState extends State<AuthWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Login to your account'),
+          title: const Text('Login to your account'),
         ),
         body: ListView(
-          children: [_HeaderWidget()],
+          children: const [_HeaderWidget()],
         ));
   }
 }
@@ -29,20 +30,20 @@ class _HeaderWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textStyle = const TextStyle(fontSize: 16, color: Colors.black);
+    const textStyle =  TextStyle(fontSize: 16, color: Colors.black);
     return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(
+            const SizedBox(
               height: 25,
             ),
-            _FormWidget(),
-            SizedBox(
+            const _FormWidget(),
+            const SizedBox(
               height: 25,
             ),
-            Text(
+            const Text(
               'Чтобы пользоваться правкой и возможностями рейтинга TMDB, '
               'а также получить персональные рекомендации, необходимо войти '
               'в свою учётную запись. Если у вас нет учётной записи, '
@@ -50,28 +51,28 @@ class _HeaderWidget extends StatelessWidget {
               'чтобы начать.',
               style: textStyle,
             ),
-            SizedBox(
+            const SizedBox(
               height: 5,
             ),
             TextButton(
                 style: AppButtonStyle.linkButton,
                 onPressed: () {},
-                child: Text('Register')),
-            SizedBox(
+                child: const Text('Register')),
+            const SizedBox(
               height: 25,
             ),
-            Text(
+            const Text(
               'Если Вы зарегистрировались, но не получили письмо для '
               'подтверждения, нажмите здесь, чтобы отправить письмо повторно.',
               style: textStyle,
             ),
-            SizedBox(
+            const SizedBox(
               height: 5,
             ),
             TextButton(
                 style: AppButtonStyle.linkButton,
                 onPressed: () {},
-                child: Text('Verify email')),
+                child: const Text('Verify email')),
           ],
         ));
   }
@@ -83,11 +84,11 @@ class _FormWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final model = NotifierProvider.readFromModel<AuthModel>(context);
-    final textStyle = const TextStyle(
+    const textStyle = TextStyle(
       fontSize: 16,
       color: Color(0xff212529),
     );
-    final textFieldDecorator = const InputDecoration(
+    const textFieldDecorator = InputDecoration(
         border: OutlineInputBorder(),
         focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(color: Colors.blue, width: 1)),
@@ -98,25 +99,25 @@ class _FormWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const _ErrorMessageWidget(),
-        Text(
+        const Text(
           'Username',
           style: textStyle,
         ),
-        SizedBox(
+        const SizedBox(
           height: 5,
         ),
         TextField(
           decoration: textFieldDecorator,
           controller: model?.loginTextController,
         ),
-        SizedBox(
+        const SizedBox(
           height: 5,
         ),
-        Text(
+        const Text(
           'Password',
           style: textStyle,
         ),
-        SizedBox(
+        const SizedBox(
           height: 5,
         ),
         TextField(
@@ -124,18 +125,18 @@ class _FormWidget extends StatelessWidget {
           obscureText: true,
           decoration: textFieldDecorator,
         ),
-        SizedBox(
+        const SizedBox(
           height: 25,
         ),
         Row(
           children: [
             const _AuthButtonWidget(),
-            SizedBox(
+            const SizedBox(
               width: 30,
             ),
             TextButton(
               onPressed: () {},
-              child: Text('Reset password'),
+              child: const Text('Reset password'),
               style: AppButtonStyle.linkButton,
             ),
           ],
@@ -162,7 +163,7 @@ class _AuthButtonWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = const Color(0xFF01b4e4);
+    const color = Color(0xFF01b4e4);
     final model = NotifierProvider.watchOnModel<AuthModel>(context);
     final child = model?.isAuthProgress == true
         ? const SizedBox(
@@ -185,10 +186,10 @@ class _AuthButtonWidget extends StatelessWidget {
           backgroundColor: MaterialStateProperty.all(color),
           foregroundColor: MaterialStateProperty.all(Colors.white),
           textStyle: MaterialStateProperty.all(
-            TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+            const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
           ),
           padding: MaterialStateProperty.all(
-              EdgeInsets.symmetric(horizontal: 15, vertical: 8))),
+              const EdgeInsets.symmetric(horizontal: 15, vertical: 8))),
     );
   }
 }
@@ -206,7 +207,7 @@ class _ErrorMessageWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 20),
       child:
-          Text(errorMessage, style: TextStyle(color: Colors.red, fontSize: 17)),
+          Text(errorMessage, style: const TextStyle(color: Colors.red, fontSize: 17)),
     );
   }
 }
