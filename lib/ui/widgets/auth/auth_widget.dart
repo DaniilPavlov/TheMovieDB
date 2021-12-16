@@ -1,18 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:themoviedb/Library/Widgets/inherited/provider.dart';
+import 'package:provider/provider.dart';
 import 'package:themoviedb/Theme/app_button_style.dart';
 import 'package:themoviedb/ui/widgets/auth/auth_model.dart';
 
-
-
-class AuthWidget extends StatefulWidget {
+class AuthWidget extends StatelessWidget {
   const AuthWidget({Key? key}) : super(key: key);
 
-  @override
-  _AuthWidgetState createState() => _AuthWidgetState();
-}
-
-class _AuthWidgetState extends State<AuthWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,19 +23,15 @@ class _HeaderWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const textStyle =  TextStyle(fontSize: 16, color: Colors.black);
+    const textStyle = TextStyle(fontSize: 16, color: Colors.black);
     return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(
-              height: 25,
-            ),
+            const SizedBox(height: 25),
             const _FormWidget(),
-            const SizedBox(
-              height: 25,
-            ),
+            const SizedBox(height: 25),
             const Text(
               'Чтобы пользоваться правкой и возможностями рейтинга TMDB, '
               'а также получить персональные рекомендации, необходимо войти '
@@ -51,24 +40,18 @@ class _HeaderWidget extends StatelessWidget {
               'чтобы начать.',
               style: textStyle,
             ),
-            const SizedBox(
-              height: 5,
-            ),
+            const SizedBox(height: 5),
             TextButton(
                 style: AppButtonStyle.linkButton,
                 onPressed: () {},
                 child: const Text('Register')),
-            const SizedBox(
-              height: 25,
-            ),
+            const SizedBox(height: 25),
             const Text(
               'Если Вы зарегистрировались, но не получили письмо для '
               'подтверждения, нажмите здесь, чтобы отправить письмо повторно.',
               style: textStyle,
             ),
-            const SizedBox(
-              height: 5,
-            ),
+            const SizedBox(height: 5),
             TextButton(
                 style: AppButtonStyle.linkButton,
                 onPressed: () {},
@@ -83,7 +66,7 @@ class _FormWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = NotifierProvider.readFromModel<AuthModel>(context);
+    final model = context.read<AuthModel>();
     const textStyle = TextStyle(
       fontSize: 16,
       color: Color(0xff212529),
@@ -94,7 +77,6 @@ class _FormWidget extends StatelessWidget {
             borderSide: BorderSide(color: Colors.blue, width: 1)),
         contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         isCollapsed: true);
-    //Объявляем переменную почему так не понял
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -103,37 +85,27 @@ class _FormWidget extends StatelessWidget {
           'Username',
           style: textStyle,
         ),
-        const SizedBox(
-          height: 5,
-        ),
+        const SizedBox(height: 5),
         TextField(
           decoration: textFieldDecorator,
-          controller: model?.loginTextController,
+          controller: model.loginTextController,
         ),
-        const SizedBox(
-          height: 5,
-        ),
+        const SizedBox(height: 5),
         const Text(
           'Password',
           style: textStyle,
         ),
-        const SizedBox(
-          height: 5,
-        ),
+        const SizedBox(height: 5),
         TextField(
-          controller: model?.passwordTextController,
+          controller: model.passwordTextController,
           obscureText: true,
           decoration: textFieldDecorator,
         ),
-        const SizedBox(
-          height: 25,
-        ),
+        const SizedBox(height: 25),
         Row(
           children: [
             const _AuthButtonWidget(),
-            const SizedBox(
-              width: 30,
-            ),
+            const SizedBox(width: 30),
             TextButton(
               onPressed: () {},
               child: const Text('Reset password'),
@@ -147,25 +119,13 @@ class _FormWidget extends StatelessWidget {
 }
 
 class _AuthButtonWidget extends StatelessWidget {
-  const _AuthButtonWidget({
-    Key? key,
-  }) : super(key: key);
-
-  void pressff(BuildContext context) {
-    final model = NotifierProvider.watchOnModel<AuthModel>(context);
-    if (model?.canStartAuth == true) {
-      model?.auth(context);
-      print('can start auth');
-    } else {
-      print('cant start auth');
-    }
-  }
+  const _AuthButtonWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final model = context.watch<AuthModel>();
     const color = Color(0xFF01b4e4);
-    final model = NotifierProvider.watchOnModel<AuthModel>(context);
-    final child = model?.isAuthProgress == true
+    final child = model.isAuthProgress
         ? const SizedBox(
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 11),
@@ -179,17 +139,26 @@ class _AuthButtonWidget extends StatelessWidget {
           )
         : const Text('Login');
     return ElevatedButton(
-      onPressed: () => pressff(context),
+      onPressed: () {
+        if (model.canStartAuth) {
+          model.auth(context);
+          print('can start auth');
+        } else {
+          print('cant start auth');
+        }
+      },
       child: child,
       style: ButtonStyle(
-          minimumSize: MaterialStateProperty.all(Size.zero),
-          backgroundColor: MaterialStateProperty.all(color),
-          foregroundColor: MaterialStateProperty.all(Colors.white),
-          textStyle: MaterialStateProperty.all(
-            const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
-          ),
-          padding: MaterialStateProperty.all(
-              const EdgeInsets.symmetric(horizontal: 15, vertical: 8))),
+        minimumSize: MaterialStateProperty.all(Size.zero),
+        backgroundColor: MaterialStateProperty.all(color),
+        foregroundColor: MaterialStateProperty.all(Colors.white),
+        textStyle: MaterialStateProperty.all(
+          const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+        ),
+        padding: MaterialStateProperty.all(
+          const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+        ),
+      ),
     );
   }
 }
@@ -202,12 +171,12 @@ class _ErrorMessageWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final errorMessage =
-        NotifierProvider.watchOnModel<AuthModel>(context)?.errorMessage;
+        context.select((AuthModel model) => model.errorMessage);
     if (errorMessage == null) return const SizedBox.shrink();
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 20),
-      child:
-          Text(errorMessage, style: const TextStyle(color: Colors.red, fontSize: 17)),
+      child: Text(errorMessage,
+          style: const TextStyle(color: Colors.red, fontSize: 17)),
     );
   }
 }

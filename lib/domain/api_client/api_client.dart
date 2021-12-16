@@ -1,11 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:themoviedb/domain/entities/movie_details.dart';
 import 'package:themoviedb/domain/entities/popular_movie_response.dart';
 
-// перечисление ошибок
-enum ApiClientExceptionType { Network, Auth, Other, SessionExpired }
+enum ApiClientExceptionType { network, auth, other, sessionExpired }
 
 //Создаем класс ошибок для этого имплементируем класс Exception
 class ApiClientException implements Exception {
@@ -14,14 +12,14 @@ class ApiClientException implements Exception {
   ApiClientException(this.type);
 }
 
-enum MediaType { Movie, TV }
+enum MediaType { movie, tv }
 
 extension MediaTypeAsString on MediaType {
   String asString() {
     switch (this) {
-      case MediaType.Movie:
+      case MediaType.movie:
         return 'movie';
-      case MediaType.TV:
+      case MediaType.tv:
         return 'TV';
     }
   }
@@ -54,12 +52,12 @@ class ApiClient {
       final result = parser(json);
       return result;
     } on SocketException {
-      throw ApiClientException(ApiClientExceptionType.Network);
+      throw ApiClientException(ApiClientExceptionType.network);
     } on ApiClientException {
       rethrow;
     } catch (e) {
       print(e);
-      throw ApiClientException(ApiClientExceptionType.Other);
+      throw ApiClientException(ApiClientExceptionType.other);
     }
   }
 
@@ -82,11 +80,11 @@ class ApiClient {
       final result = parser(json);
       return result;
     } on SocketException {
-      throw ApiClientException(ApiClientExceptionType.Network);
+      throw ApiClientException(ApiClientExceptionType.network);
     } on ApiClientException {
       rethrow;
     } catch (e) {
-      throw ApiClientException(ApiClientExceptionType.Other);
+      throw ApiClientException(ApiClientExceptionType.other);
     }
   }
 
@@ -190,11 +188,11 @@ class ApiClient {
       final dynamic status = json['status_code'];
       final code = status is int ? status : 0;
       if (code == 30) {
-        throw ApiClientException(ApiClientExceptionType.Auth);
+        throw ApiClientException(ApiClientExceptionType.auth);
       } else if (code == 3) {
-        throw ApiClientException(ApiClientExceptionType.SessionExpired);
+        throw ApiClientException(ApiClientExceptionType.sessionExpired);
       } else {
-        throw ApiClientException(ApiClientExceptionType.Other);
+        throw ApiClientException(ApiClientExceptionType.other);
       }
     }
   }

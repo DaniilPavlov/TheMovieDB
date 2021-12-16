@@ -110,7 +110,7 @@ class MovieDetailsModel extends ChangeNotifier {
       _apiClient.markAsFavorite(
           accountId: accountId,
           sessionId: sessionId,
-          mediaType: MediaType.Movie,
+          mediaType: MediaType.movie,
           mediaId: movieId,
           isFavorite: !isFavorite);
     } on ApiClientException catch (e) {
@@ -125,7 +125,7 @@ class MovieDetailsModel extends ChangeNotifier {
 // авторизации
   void _handleApiClientException(ApiClientException exception) {
     switch (exception.type) {
-      case ApiClientExceptionType.SessionExpired:
+      case ApiClientExceptionType.sessionExpired:
         onSessionExpired?.call();
         break;
       default:
