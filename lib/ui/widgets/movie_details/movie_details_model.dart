@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:palette_generator/palette_generator.dart';
-import 'package:themoviedb/domain/api_client/api_client.dart';
+import 'package:themoviedb/domain/client/account_api_client.dart';
+import 'package:themoviedb/domain/client/api_client_exception.dart';
+import 'package:themoviedb/domain/client/image_downloader.dart';
+import 'package:themoviedb/domain/client/movie_api_client.dart';
 import 'package:themoviedb/domain/data_providers/session_data_provider.dart';
 import 'package:themoviedb/domain/entities/movie_details.dart';
 import 'package:themoviedb/ui/navigation/main_navigation.dart';
 
 class MovieDetailsModel extends ChangeNotifier {
   final _sessionDataProvider = SessionDataProvider();
-  final _apiClient = ApiClient();
+  final _movieApiClient = MovieApiClient();
+  final _accountApiClient = AccountApiClient();
 
   final int movieId;
   MovieDetails? _movieDetails;
@@ -51,7 +55,7 @@ class MovieDetailsModel extends ChangeNotifier {
 
   Future<Image> _downloadImage(String src) async {
     final image = Image.network(
-      ApiClient.imageUrl(src),
+      ImageDownloader.imageUrl(src),
       filterQuality: FilterQuality.high,
     );
     return image;
@@ -62,11 +66,11 @@ class MovieDetailsModel extends ChangeNotifier {
 
   Future<void> loadDetails() async {
     try {
-      _movieDetails = await _apiClient.movieDetails(movieId, _locale);
+      _movieDetails = await _movieApiClient.movieDetails(movieId, _locale);
 
       final sessionId = await SessionDataProvider().getSessionId();
       if (sessionId != null) {
-        _isFavorite = await _apiClient.isFavorite(movieId, sessionId);
+        _isFavorite = await _movieApiClient.isFavorite(movieId, sessionId);
       }
 
       final _front = _movieDetails?.posterPath;
@@ -107,7 +111,7 @@ class MovieDetailsModel extends ChangeNotifier {
 
     // print(_isFavorite);
     try {
-      _apiClient.markAsFavorite(
+      _accountApiClient.markAsFavorite(
           accountId: accountId,
           sessionId: sessionId,
           mediaType: MediaType.movie,
@@ -119,7 +123,6 @@ class MovieDetailsModel extends ChangeNotifier {
     _isFavorite = !_isFavorite;
     notifyListeners();
   }
-
 
 // если токен авторизации устаревает, пользователя выкидывает на экран
 // авторизации

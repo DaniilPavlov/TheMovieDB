@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:themoviedb/Library/Widgets/inherited/provider.dart';
-import 'package:themoviedb/domain/api_client/api_client.dart';
+import 'package:themoviedb/domain/client/image_downloader.dart';
 import 'package:themoviedb/ui/widgets/movie_details/movie_details_model.dart';
 
 class MovieDetailsMainScreenCastWidget extends StatelessWidget {
@@ -105,7 +105,7 @@ class _ActorListItemWidget extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             profilePath != null
-                ? Image.network(ApiClient.imageUrl(profilePath))
+                ? Image.network(ImageDownloader.imageUrl(profilePath))
                 : const SizedBox.shrink(),
             Padding(
               padding: const EdgeInsets.only(left: 5, top: 5, right: 5),
