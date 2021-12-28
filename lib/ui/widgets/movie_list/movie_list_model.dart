@@ -1,25 +1,39 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:themoviedb/domain/client/movie_api_client.dart';
+import 'package:themoviedb/Library/paginator.dart';
 import 'package:themoviedb/domain/entities/movie.dart';
-import 'package:themoviedb/domain/entities/popular_movie_response.dart';
+import 'package:themoviedb/domain/services/movie_service.dart';
 import 'package:themoviedb/ui/navigation/main_navigation.dart';
 
-class MovieListModel extends ChangeNotifier {
-  final _movieApiClient = MovieApiClient();
-  final _movies = <Movie>[];
+class MovieListRowData {
+  final int id;
+  final String? posterPath;
+  final String title;
+  final String releaseDate;
+  final String overview;
 
-  List<Movie> get movies => List.unmodifiable(_movies);
+  MovieListRowData({
+    required this.id,
+    required this.posterPath,
+    required this.title,
+    required this.releaseDate,
+    required this.overview,
+  });
+}
+
+class MovieListViewModel extends ChangeNotifier {
+  final _movieService = MovieService();
+
+  //пагинаторы хранят в себе прогресс загруженных страниц
+  //и отвечают за загрузку следующих страниц
+  late final Paginator<Movie> _popularMoviePaginator;
+  late final Paginator<Movie> _searchMoviePaginator;
+  List<MovieListRowData> _movies = <MovieListRowData>[];
+
+  List<MovieListRowData> get movies => List.unmodifiable(_movies);
   late DateFormat _dateFormat;
   String _locale = '';
-
-  late int _currentPage;
-  late int _totalPage;
-
-  //когда мы грузим страницу не надо вызывать следующую загрузку
-  var _isLoadingInProgress = false;
 
   // в зависимости от того есть ли это поле мы менеям наше состояние
   String? _searchQuery;
@@ -27,6 +41,31 @@ class MovieListModel extends ChangeNotifier {
   //каждое нажатие клавиши провоцирует запрос в инет на фильмы это не очень хорошо
   //чтобы это избежать нужен таймер
   Timer? searchDelay;
+
+  bool get isSearchMode {
+    return _searchQuery != null && _searchQuery!.isNotEmpty;
+  }
+
+//в чем фишка пагинаторов:
+//при переходе в поиск и выходе из него, прогресс обычных загруженных
+//фильмов не сбрасывается, их не нужно снова грузить
+  MovieListViewModel() {
+    _popularMoviePaginator = Paginator<Movie>((page) async {
+      final result = await _movieService.popularMovie(page, _locale);
+      return PaginatorLoadResult(
+          data: result.movies,
+          currentPage: result.page,
+          totalPage: result.totalPages);
+    });
+    _searchMoviePaginator = Paginator<Movie>((page) async {
+      final result =
+          await _movieService.searchMovie(page, _locale, _searchQuery ?? "");
+      return PaginatorLoadResult(
+          data: result.movies,
+          currentPage: result.page,
+          totalPage: result.totalPages);
+    });
+  }
 
   //настройка локализации, производим сразу при попадании в приложение
   //после авторизации
@@ -39,14 +78,22 @@ class MovieListModel extends ChangeNotifier {
   }
 
   Future<void> resetList() async {
+    await _popularMoviePaginator.reset();
+    await _searchMoviePaginator.reset();
     _movies.clear();
-    _currentPage = 0;
-    _totalPage = 1;
     await _loadNextPage();
   }
 
-  String stringFromDate(DateTime? date) =>
-      date != null ? _dateFormat.format(date) : '';
+  MovieListRowData _makeRowData(Movie movie) {
+    final releaseDate =
+        movie.releaseDate != null ? _dateFormat.format(movie.releaseDate!) : '';
+    return MovieListRowData(
+        id: movie.id,
+        posterPath: movie.posterPath,
+        title: movie.title,
+        releaseDate: releaseDate,
+        overview: movie.overview);
+  }
 
   void onMovieTap(BuildContext context, int index) {
     final id = _movies[index].id;
@@ -54,34 +101,17 @@ class MovieListModel extends ChangeNotifier {
         .pushNamed(MainNavigationRouteNames.movieDetails, arguments: id);
   }
 
-  // если квери не пустое то вы возвращем поиск фильмов, если пустое то выводим список фильмов
-  Future<PopularMovieResponse> _loadMovies(int nextPage, String locale) async {
-    final query = _searchQuery;
-    if (query == null) {
-      return _movieApiClient.popularMovie(nextPage, locale);
-    } else {
-      return _movieApiClient.searchMovie(nextPage, locale, query);
-    }
-  }
-
   Future<void> _loadNextPage() async {
-    if (_isLoadingInProgress || _currentPage >= _totalPage) return;
-    _isLoadingInProgress = !_isLoadingInProgress;
-    final _nextPage = _currentPage + 1;
-    try {
-      final responseMovies = await _loadMovies(_nextPage, _locale);
-      _movies.addAll(responseMovies.movies);
-      _currentPage = responseMovies.page;
-      _totalPage = responseMovies.totalPages;
-      print('number of films is $_totalPage');
-      _isLoadingInProgress = !_isLoadingInProgress;
-      notifyListeners();
-    } catch (e) {
-      _isLoadingInProgress = !_isLoadingInProgress;
+    if (isSearchMode) {
+      await _searchMoviePaginator.loadNextPage();
+      _movies = _searchMoviePaginator.data.map(_makeRowData).toList();
+    } else {
+      await _popularMoviePaginator.loadNextPage();
+      _movies = _popularMoviePaginator.data.map(_makeRowData).toList();
     }
+    notifyListeners();
   }
 
-  // добавляем методы для поиска фильмов
   Future<void> searchMovie(String text) async {
     // если не добавить кэнсел, таймер будет вызываться столько раз,
     // сколько букв в слове, а так при вводе новой буквы
@@ -91,7 +121,11 @@ class MovieListModel extends ChangeNotifier {
       final searchQuery = text.isNotEmpty ? text : null;
       if (_searchQuery == searchQuery) return;
       _searchQuery = searchQuery;
-      await resetList();
+      _movies.clear();
+      if (isSearchMode) {
+        await _searchMoviePaginator.reset();
+      }
+      _loadNextPage();
     });
   }
 

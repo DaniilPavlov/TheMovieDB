@@ -6,11 +6,14 @@ import 'package:themoviedb/ui/widgets/auth/auth_model.dart';
 import 'package:themoviedb/ui/widgets/auth/auth_widget.dart';
 import 'package:themoviedb/ui/widgets/loader/loader_view_model.dart';
 import 'package:themoviedb/ui/widgets/loader/loader_widget.dart';
-import 'package:themoviedb/ui/widgets/main_screen/main_screen_model.dart';
 import 'package:themoviedb/ui/widgets/main_screen/main_screen_widget.dart';
 import 'package:themoviedb/ui/widgets/movie_details/movie_details_model.dart';
 import 'package:themoviedb/ui/widgets/movie_details/movie_details_widget.dart';
 import 'package:themoviedb/ui/widgets/movie_details/movie_trailer_widget.dart';
+import 'package:themoviedb/ui/widgets/movie_list/movie_list_model.dart';
+import 'package:themoviedb/ui/widgets/movie_list/movie_list_widget.dart';
+import 'package:themoviedb/ui/widgets/news_list/news_list_widget.dart';
+import 'package:themoviedb/ui/widgets/serials_list/serials_list_widget.dart';
 
 class ScreenFactory {
   Widget makeLoader() {
@@ -31,10 +34,7 @@ class ScreenFactory {
   }
 
   Widget makeMainScreen() {
-    return old_provider.NotifierProvider(
-      child: const MainScreenWidget(),
-      create: () => MainScreenModel(),
-    );
+    return const MainScreenWidget();
   }
 
   Widget makeMovieDetails(int movieId) {
@@ -46,5 +46,20 @@ class ScreenFactory {
 
   Widget makeMovieTrailer(String youTubeKey) {
     return MovieTrailerWidget(youTubeKey: youTubeKey);
+  }
+
+  Widget makeNewsList() {
+    return const NewsListWidget();
+  }
+
+  Widget makeMovieList() {
+    return ChangeNotifierProvider(
+      create: (_) => MovieListViewModel(),
+      child: const MovieListWidget(),
+    );
+  }
+
+  Widget makeSerialsList() {
+    return const SerialsListWidget();
   }
 }

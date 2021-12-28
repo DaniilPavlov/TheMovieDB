@@ -6,7 +6,11 @@ import 'package:themoviedb/domain/entities/popular_movie_response.dart';
 class MovieApiClient {
   final _networkClient = NetworkClient();
 
-  Future<PopularMovieResponse> popularMovie(int page, String locale) async {
+  Future<PopularMovieResponse> popularMovie(
+    int page,
+    String locale,
+    String apiKey,
+  ) async {
     PopularMovieResponse parser(dynamic json) {
       final jsonMap = json as Map<String, dynamic>;
       final response = PopularMovieResponse.fromJson(jsonMap);
@@ -17,7 +21,7 @@ class MovieApiClient {
       '/movie/popular',
       parser,
       <String, dynamic>{
-        'api_key': Configuration.apiKey,
+        'api_key': apiKey,
         'page': page.toString(),
         'language': locale,
       },
@@ -28,7 +32,7 @@ class MovieApiClient {
   // Поиск для него подходит такая же обработка как и для популярных фильмов
   // так что будем использовать и ее модель
   Future<PopularMovieResponse> searchMovie(
-      int page, String locale, String query) async {
+      int page, String locale, String query, String apiKey) async {
     PopularMovieResponse parser(dynamic json) {
       final jsonMap = json as Map<String, dynamic>;
       final response = PopularMovieResponse.fromJson(jsonMap);
@@ -39,7 +43,7 @@ class MovieApiClient {
       '/search/movie',
       parser,
       <String, dynamic>{
-        'api_key': Configuration.apiKey,
+        'api_key': apiKey,
         'language': locale,
         'query': query,
         'page': page.toString(),
