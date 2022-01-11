@@ -9,7 +9,7 @@ class SerialsListWidget extends StatelessWidget {
 
   void logOut(BuildContext context) {
     final provider = SessionDataProvider();
-    provider.setSessionId(null);
+    provider.deleteSessionId();
     Navigator.of(context).pushReplacementNamed(MainNavigationRouteNames.auth);
   }
 

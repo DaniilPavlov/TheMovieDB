@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:themoviedb/Library/Widgets/inherited/provider.dart';
+import 'package:provider/provider.dart';
 import 'package:themoviedb/Theme/app_colors.dart';
 import 'package:themoviedb/domain/entities/movie_details_credits.dart';
+import 'package:themoviedb/ui/navigation/main_navigation.dart';
 import 'package:themoviedb/ui/widgets/custom_progress_bar_widget.dart';
 import 'package:themoviedb/ui/widgets/movie_details/movie_details_model.dart';
 
@@ -35,8 +36,10 @@ class _TopPosterWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = NotifierProvider.watchOnModel<MovieDetailsModel>(context);
-    if (model?.backDrop == null) return const SizedBox.shrink();
+    final model = context.watch<MovieDetailsModel>();
+    final posterData =
+        context.select((MovieDetailsModel model) => model.data.posterData);
+    if (posterData.posterPath == null) return const SizedBox.shrink();
     // обернули стек в аспект ратио для того, чтобы страница не прыгала
     // после загрузки инфомарции. Мы сразу выделяем место на экране
     // под изображение. Ратио высчитан сам (1.8)
@@ -62,14 +65,14 @@ class _TopPosterWidget extends StatelessWidget {
               );
             },
             blendMode: BlendMode.dstIn,
-            child: model?.backDrop,
+            child: model.backDrop,
           ),
           Positioned(
             top: 20,
             left: 20,
             bottom: 20,
             child: Container(
-              child: model?.poster,
+              child: model.poster,
               clipBehavior: Clip.hardEdge,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
@@ -80,39 +83,13 @@ class _TopPosterWidget extends StatelessWidget {
             top: 5,
             right: 5,
             child: IconButton(
-              icon: Icon(
-                model?.isFavorite == true
-                    ? Icons.favorite
-                    : Icons.favorite_border_sharp,
-                color: Colors.white,
-              ),
-              onPressed: () => model?.onFavoriteTap(),
+              icon: Icon(model.isFavorite == true
+                  ? Icons.favorite
+                  : Icons.favorite_border_sharp),
+              onPressed: () => model.onFavoriteTap(context),
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class LinearGradientWidget extends StatelessWidget {
-  const LinearGradientWidget({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return const DecoratedBox(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            AppColors.blackBackgroundMovieDetail,
-            Colors.transparent,
-          ],
-          stops: [0.2, 0.7],
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight,
-        ),
       ),
     );
   }
@@ -123,23 +100,21 @@ class _MovieNameWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = NotifierProvider.watchOnModel<MovieDetailsModel>(context);
-    var year = model?.movieDetails?.releaseDate?.year.toString();
-    year = year != null ? ' ($year)' : '';
+    var data = context.select((MovieDetailsModel model) => model.data.nameData);
     return Center(
       child: RichText(
         textAlign: TextAlign.center,
         text: TextSpan(
           children: [
             TextSpan(
-              text: model?.movieDetails?.title ?? '',
+              text: data.name,
               style: const TextStyle(
-                  fontWeight: FontWeight.w800,
-                  fontSize: 17,
-                  color: AppColors.titleColorMovieDetail),
+                fontWeight: FontWeight.w800,
+                fontSize: 17,
+              ),
             ),
             TextSpan(
-                text: year,
+                text: data.year,
                 style: const TextStyle(
                     color: AppColors.summaryDateMovieDetail,
                     fontWeight: FontWeight.w400,
@@ -158,12 +133,9 @@ class _ScoreWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = NotifierProvider.watchOnModel<MovieDetailsModel>(context);
-    final score = model?.movieDetails?.voteAverage;
-    final videos = model?.movieDetails?.videos.results
-        .where((video) => video.type == 'Trailer' && video.site == 'YouTube');
-    //чтобы отобразить видео нам нужен ключ
-    final trailerKey = videos?.isNotEmpty == true ? videos?.first.key : null;
+    var data =
+        context.select((MovieDetailsModel model) => model.data.scoreData);
+    final trailerKey = data.trailerKey;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       child: Row(
@@ -181,30 +153,25 @@ class _ScoreWidget extends StatelessWidget {
                     height: 40,
                     child: RadialPercentWidget(
                       child: Text(
-                        score != null
-                            ? '${(10 * score).toInt().toString()}%'
-                            : '',
+                        data.voteAverage.toStringAsFixed(0),
                         style: const TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.w400,
                             fontSize: 13),
                       ),
-                      percent: score != null ? score * 10 : 88,
+                      percent: data.voteAverage,
                       fillColor: AppColors.progressBarBackground,
-                      //freeColor: AppColors.freeLine,
                       lineWidth: 3,
-                      //lineColor: AppColors.line,
                     ),
                   ),
                 ),
-                Text(
+                const Text(
                   '''User
 Score''',
                   maxLines: 2,
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
-                    color: model?.getColorList.dominantColor?.bodyTextColor,
                   ),
                 ),
               ],
@@ -215,27 +182,23 @@ Score''',
             height: 15,
             color: Colors.grey,
           ),
-          trailerKey != null
-              ? TextButton(
-                  style: TextButton.styleFrom(padding: EdgeInsets.zero),
-                  onPressed: () => model?.onTrailerTap(context, trailerKey),
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.arrow_right_sharp,
-                        color: model?.getColorList.dominantColor?.bodyTextColor,
-                      ),
-                      Text(
-                        'Play',
-                        style: TextStyle(
-                          color:
-                              model?.getColorList.dominantColor?.bodyTextColor,
-                        ),
-                      ),
-                    ],
+          if (trailerKey != null)
+            TextButton(
+              style: TextButton.styleFrom(padding: EdgeInsets.zero),
+              onPressed: () => Navigator.of(context).pushNamed(
+                  MainNavigationRouteNames.movieTrailer,
+                  arguments: trailerKey),
+              child: Row(
+                children: const [
+                  Icon(
+                    Icons.arrow_right_sharp,
                   ),
-                )
-              : const SizedBox.shrink(),
+                  Text(
+                    'Play',
+                  ),
+                ],
+              ),
+            ),
         ],
       ),
     );
@@ -247,48 +210,19 @@ class _SummeryWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = NotifierProvider.watchOnModel<MovieDetailsModel>(context);
-    if (model == null) return const SizedBox.shrink();
-    //собираем массив из слов которые надо вписать
-    var summary = <String>[];
-    // записываем в массив дату когда был выпущен фильм
-    final releaseDate = model.movieDetails?.releaseDate;
-    if (releaseDate != null) {
-      // переводим дату в стрингу и записываем в массив
-      summary.add(model.stringFromDate(releaseDate));
-    }
-    // собираем страны
-    final productionCountries = model.movieDetails?.productionCountries;
-    if (productionCountries != null && productionCountries.isNotEmpty) {
-      summary.add(productionCountries.first.iso);
-    }
-    // Продолжительность фильма тут парсим в часы из минут
-    final runtime = model.movieDetails?.runtime ?? 0;
-    final duration = Duration(minutes: runtime);
-    final hours = duration.inHours;
-    final minutes = duration.inMinutes.remainder(60);
-    summary.add('${hours}h ${minutes}m');
-    // Массив жанров в которых представлен фильм
-    final genres = model.movieDetails?.genres;
-    if (genres != null && genres.isNotEmpty) {
-      var genresNames = <String>[];
-      for (var genre in genres) {
-        genresNames.add(genre.name);
-      }
-      summary.add(genresNames.join(', '));
-    }
+    final summary =
+        context.select((MovieDetailsModel model) => model.data.summary);
 
     return Center(
       child: ColoredBox(
-        color: model.getColorList.dominantColor?.bodyTextColor ?? Colors.grey,
+        color: Colors.grey,
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
           child: Text(
-            summary.join(' '),
+            summary,
             maxLines: 3,
             textAlign: TextAlign.center,
-            style: TextStyle(
-              color: model.getColorList.dominantColor?.color,
+            style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w400,
             ),
@@ -304,10 +238,10 @@ class _ReviewWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = NotifierProvider.watchOnModel<MovieDetailsModel>(context);
+    final model = context.read<MovieDetailsModel>();
 
-    final overview = model?.movieDetails?.overview ?? '';
-    final tagLine = model?.movieDetails?.tagline ?? '';
+    final overview = model.data.overview;
+    final tagLine = model.data.tagline;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -317,51 +251,44 @@ class _ReviewWidget extends StatelessWidget {
             : Text(
                 tagLine,
                 textAlign: TextAlign.left,
-                style: TextStyle(
-                    color: model?.getColorList.darkVibrantColor?.bodyTextColor,
+                style: const TextStyle(
                     fontSize: 18,
                     fontStyle: FontStyle.italic,
-                    fontWeight: FontWeight.w400),
+                    fontWeight: FontWeight.w400,
+                    color: Colors.white),
               ),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10),
+        const Padding(
+          padding: EdgeInsets.symmetric(vertical: 10),
           child: Text(
             'Обзор',
             style: TextStyle(
-                color: model?.getColorList.darkVibrantColor?.bodyTextColor,
-                fontSize: 21,
-                fontWeight: FontWeight.w600),
+                fontSize: 21, fontWeight: FontWeight.w600, color: Colors.white),
           ),
         ),
         overview == ''
             ? const SizedBox.shrink()
             : Text(
                 overview,
-                style: TextStyle(
-                  fontSize: 16,
-                  color: model?.getColorList.darkVibrantColor?.bodyTextColor,
-                ),
+                style: const TextStyle(fontSize: 16, color: Colors.white),
               ),
         const Padding(
           padding: EdgeInsets.only(top: 30),
-          child: _DirectorWidget(),
+          child: _DirectorsWidget(),
         )
       ],
     );
   }
 }
 
-class _DirectorWidget extends StatelessWidget {
-  const _DirectorWidget({
+class _DirectorsWidget extends StatelessWidget {
+  const _DirectorsWidget({
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final model = NotifierProvider.watchOnModel<MovieDetailsModel>(context);
-
-    var crew = model?.movieDetails?.credits.crew;
-
+    var crew = context
+        .select((MovieDetailsModel model) => model.movieDetails?.credits.crew);
     //если нет актеров
     if (crew == null || crew.isEmpty) return const SizedBox.shrink();
     //сортировка по популярности
@@ -374,40 +301,16 @@ class _DirectorWidget extends StatelessWidget {
               employee: employee,
             ))
         .toList();
-    // return Row(children: crewWidget);
-    // return SizedBox.shrink();
     return SizedBox(
-        height: 160,
-        child: GridView.count(
-          physics:  const NeverScrollableScrollPhysics(),
-          // shrinkWrap: true,
-          // primary: false,
-          padding: const EdgeInsets.all(10),
-          childAspectRatio: 2,
-          // crossAxisSpacing: 10,
-          // mainAxisSpacing: 10,
-          crossAxisCount: 2,
-          children: crewWidget,
-        ));
-    // return SizedBox(
-    //   height: 100,
-    //   width: double.infinity,
-    //   child: Wrap(
-    //     direction: Axis.horizontal,
-    //     children: crewWidget,
-    //   ),
-    // );
-    // return SizedBox(
-    //   width: double.infinity,
-    //   child: Row(
-    //     children: [
-    //       Column(
-    //         crossAxisAlignment: CrossAxisAlignment.start,
-    //         children: crewWidget,
-    //       ),
-    //     ],
-    //   ),
-    // );
+      height: 160,
+      child: GridView.count(
+        physics: const NeverScrollableScrollPhysics(),
+        padding: const EdgeInsets.all(10),
+        childAspectRatio: 2,
+        crossAxisCount: 2,
+        children: crewWidget,
+      ),
+    );
   }
 }
 

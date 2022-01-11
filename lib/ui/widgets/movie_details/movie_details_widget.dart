@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:themoviedb/Library/Widgets/inherited/provider.dart';
+import 'package:provider/provider.dart';
 import 'package:themoviedb/Theme/app_colors.dart';
-import 'package:themoviedb/ui/widgets/app/my_app_model.dart';
 import 'package:themoviedb/ui/widgets/movie_details/movie_details_main_info_widget.dart';
 import 'package:themoviedb/ui/widgets/movie_details/movie_details_model.dart';
 import 'package:themoviedb/ui/widgets/movie_details/movie_details_screen_cast_widget.dart';
@@ -15,20 +14,13 @@ class MovieDetailsWidget extends StatefulWidget {
 
 class _MovieDetailsWidgetState extends State<MovieDetailsWidget> {
   @override
-  void initState() {
-    super.initState();
-    final model = NotifierProvider.readFromModel<MovieDetailsModel>(context);
-    final appModel = Provider.read<MyAppModel>(context);
-    model?.onSessionExpired = () => appModel?.resetSession(context);
-  }
-
-  @override
   void didChangeDependencies() {
     //получаем нашу модель и выполняем сетап локаль и таким
     //образом настраиваем локаль и подписываемся на измениние локали
     super.didChangeDependencies();
-    NotifierProvider.readFromModel<MovieDetailsModel>(context)
-        ?.setupLocale(context);
+    //Future.microtask - штука специально для провайдера, чтобы вызов
+    //notifylisteners() во время build не ломал приложение
+    Future.microtask(() => context.read<MovieDetailsModel>().setupLocale(context));
   }
 
   @override
@@ -51,8 +43,9 @@ class _BodyWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = NotifierProvider.watchOnModel<MovieDetailsModel>(context);
-    if (model?.isLoading == true) {
+    final isLoading =
+        context.select((MovieDetailsModel model) => model.data.isLoading);
+    if (isLoading) {
       return const Center(
         child: CircularProgressIndicator(),
       );
@@ -80,7 +73,7 @@ class _TitleWidget extends StatelessWidget {
 // виджет перенесен отдельно аппбар и скаффолд перезагружаться не будут
   @override
   Widget build(BuildContext context) {
-    final model = NotifierProvider.watchOnModel<MovieDetailsModel>(context);
-    return Text(model?.movieDetails?.title ?? 'Загрузка...');
+    final title = context.select((MovieDetailsModel model) => model.data.title);
+    return Text(title);
   }
 }
