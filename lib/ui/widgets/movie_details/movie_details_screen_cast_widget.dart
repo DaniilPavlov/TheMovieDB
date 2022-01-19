@@ -59,7 +59,7 @@ class _ActorListWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = context.read<MovieDetailsModel>();
+    final model = context.read<MovieDetailsViewModel>();
     var cast = model.movieDetails?.credits.cast;
     if (cast == null || cast.isEmpty) return const SizedBox.shrink();
     cast.sort((a, b) => b.popularity.compareTo(a.popularity));
@@ -84,7 +84,7 @@ class _ActorListItemWidget extends StatelessWidget {
   final int actroIndex;
   @override
   Widget build(BuildContext context) {
-    final model = context.read<MovieDetailsModel>();
+    final model = context.read<MovieDetailsViewModel>();
     //если бы модели не существовало, мы бы отлетели выше, поэтому
     //ставим ! а не ?
     final actor = model.movieDetails!.credits.cast[actroIndex];

@@ -8,6 +8,7 @@ import 'package:themoviedb/domain/client/movie_api_client.dart';
 import 'package:themoviedb/domain/data_providers/session_data_provider.dart';
 import 'package:themoviedb/domain/entities/movie_details.dart';
 import 'package:themoviedb/domain/services/auth_service.dart';
+import 'package:themoviedb/library/localized_model_storage.dart';
 import 'package:themoviedb/ui/navigation/main_navigation.dart';
 
 class MovieDetailsPosetData {
@@ -54,17 +55,17 @@ class MovieDetailsData {
   String summary = "";
 }
 
-class MovieDetailsModel extends ChangeNotifier {
+class MovieDetailsViewModel extends ChangeNotifier {
   final _authService = AuthService();
   final _sessionDataProvider = SessionDataProvider();
-  final _movieApiClient = MovieApiClient();
   final _accountApiClient = AccountApiClient();
+  final _movieApiClient = MovieApiClient();
 
   final data = MovieDetailsData();
 
   final int movieId;
   MovieDetails? _movieDetails;
-  String _locale = '';
+
   late DateFormat _dateFormat;
   Image? _poster;
   Image? _backDrop;
@@ -73,7 +74,9 @@ class MovieDetailsModel extends ChangeNotifier {
 
   bool get isFavorite => _isFavorite;
 
-  MovieDetailsModel(
+  final _localeStorage = LocalizedModelStorage();
+
+  MovieDetailsViewModel(
     this.movieId,
   );
 
@@ -141,12 +144,10 @@ class MovieDetailsModel extends ChangeNotifier {
     return summary.join(' ');
   }
 
-  Future<void> setupLocale(BuildContext context) async {
+  Future<void> setupLocale(BuildContext context, Locale locale) async {
     _loading = true;
-    final locale = Localizations.localeOf(context).toLanguageTag();
-    if (locale == _locale) return;
-    _locale = locale;
-    _dateFormat = DateFormat.yMMMMd(locale);
+    if (!_localeStorage.updateLocale(locale)) return;
+    _dateFormat = DateFormat.yMMMMd(_localeStorage.localeTag);
     updateData(null, false);
     await loadDetails(context);
   }
@@ -161,29 +162,6 @@ class MovieDetailsModel extends ChangeNotifier {
 
   String stringFromDate(DateTime? date) =>
       date != null ? _dateFormat.format(date) : '';
-
-  Future<void> loadDetails(BuildContext context) async {
-    try {
-      _movieDetails = await _movieApiClient.movieDetails(movieId, _locale);
-
-      final sessionId = await SessionDataProvider().getSessionId();
-      if (sessionId != null) {
-        _isFavorite = await _movieApiClient.isFavorite(movieId, sessionId);
-      }
-      updateData(_movieDetails, _isFavorite);
-
-      final _front = _movieDetails?.posterPath;
-      _front != null ? _poster = await _downloadImage(_front) : _poster = null;
-      final _back = _movieDetails?.backdropPath;
-      _back != null
-          ? _backDrop = await _downloadImage(_back)
-          : _backDrop = null;
-      _loading = false;
-      notifyListeners();
-    } on ApiClientException catch (e) {
-      _handleApiClientException(e, context);
-    }
-  }
 
   void onTrailerTap(BuildContext context, String trailerKey) {
     Navigator.of(context).pushNamed(MainNavigationRouteNames.movieTrailer,
@@ -206,6 +184,30 @@ class MovieDetailsModel extends ChangeNotifier {
     }
     _isFavorite = !_isFavorite;
     notifyListeners();
+  }
+
+  Future<void> loadDetails(BuildContext context) async {
+    try {
+      _movieDetails =
+          await _movieApiClient.movieDetails(movieId, _localeStorage.localeTag);
+
+      final sessionId = await SessionDataProvider().getSessionId();
+      if (sessionId != null) {
+        _isFavorite = await _movieApiClient.isFavorite(movieId, sessionId);
+      }
+      updateData(_movieDetails, _isFavorite);
+
+      final _front = _movieDetails?.posterPath;
+      _front != null ? _poster = await _downloadImage(_front) : _poster = null;
+      final _back = _movieDetails?.backdropPath;
+      _back != null
+          ? _backDrop = await _downloadImage(_back)
+          : _backDrop = null;
+      _loading = false;
+      notifyListeners();
+    } on ApiClientException catch (e) {
+      _handleApiClientException(e, context);
+    }
   }
 
 // если токен авторизации устаревает, пользователя выкидывает на экран

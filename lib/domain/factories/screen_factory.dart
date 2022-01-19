@@ -26,7 +26,7 @@ class ScreenFactory {
 
   Widget makeAuth() {
     return ChangeNotifierProvider(
-      create: (_) => AuthModel(),
+      create: (_) => AuthViewModel(),
       child: const AuthWidget(),
     );
   }
@@ -37,7 +37,7 @@ class ScreenFactory {
 
   Widget makeMovieDetails(int movieId) {
     return ChangeNotifierProvider(
-      create: (_) => MovieDetailsModel(movieId),
+      create: (_) => MovieDetailsViewModel(movieId),
       child: const MovieDetailsWidget(),
     );
   }

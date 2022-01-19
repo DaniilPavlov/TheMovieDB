@@ -1,3 +1,3 @@
 import 'package:flutter/material.dart';
 
-class MainScreenModel extends ChangeNotifier {}
+class MainScreenViewModel extends ChangeNotifier {}

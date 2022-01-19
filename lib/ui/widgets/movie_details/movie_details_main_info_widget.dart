@@ -36,9 +36,9 @@ class _TopPosterWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = context.watch<MovieDetailsModel>();
+    final model = context.watch<MovieDetailsViewModel>();
     final posterData =
-        context.select((MovieDetailsModel model) => model.data.posterData);
+        context.select((MovieDetailsViewModel model) => model.data.posterData);
     if (posterData.posterPath == null) return const SizedBox.shrink();
     // обернули стек в аспект ратио для того, чтобы страница не прыгала
     // после загрузки инфомарции. Мы сразу выделяем место на экране
@@ -100,7 +100,7 @@ class _MovieNameWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var data = context.select((MovieDetailsModel model) => model.data.nameData);
+    var data = context.select((MovieDetailsViewModel model) => model.data.nameData);
     return Center(
       child: RichText(
         textAlign: TextAlign.center,
@@ -134,7 +134,7 @@ class _ScoreWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var data =
-        context.select((MovieDetailsModel model) => model.data.scoreData);
+        context.select((MovieDetailsViewModel model) => model.data.scoreData);
     final trailerKey = data.trailerKey;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
@@ -211,7 +211,7 @@ class _SummeryWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final summary =
-        context.select((MovieDetailsModel model) => model.data.summary);
+        context.select((MovieDetailsViewModel model) => model.data.summary);
 
     return Center(
       child: ColoredBox(
@@ -238,7 +238,7 @@ class _ReviewWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = context.read<MovieDetailsModel>();
+    final model = context.read<MovieDetailsViewModel>();
 
     final overview = model.data.overview;
     final tagLine = model.data.tagline;
@@ -288,7 +288,7 @@ class _DirectorsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var crew = context
-        .select((MovieDetailsModel model) => model.movieDetails?.credits.crew);
+        .select((MovieDetailsViewModel model) => model.movieDetails?.credits.crew);
     //если нет актеров
     if (crew == null || crew.isEmpty) return const SizedBox.shrink();
     //сортировка по популярности

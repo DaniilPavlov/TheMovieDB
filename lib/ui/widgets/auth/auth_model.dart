@@ -3,7 +3,7 @@ import 'package:themoviedb/domain/client/api_client_exception.dart';
 import 'package:themoviedb/domain/services/auth_service.dart';
 import 'package:themoviedb/ui/navigation/main_navigation.dart';
 
-class AuthModel extends ChangeNotifier {
+class AuthViewModel extends ChangeNotifier {
   final _authService = AuthService();
   final loginTextController = TextEditingController(text: 'Daniil_Pavlov');
   final passwordTextController = TextEditingController();

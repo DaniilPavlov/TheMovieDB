@@ -18,9 +18,11 @@ class _MovieDetailsWidgetState extends State<MovieDetailsWidget> {
     //получаем нашу модель и выполняем сетап локаль и таким
     //образом настраиваем локаль и подписываемся на измениние локали
     super.didChangeDependencies();
+    final locale = Localizations.localeOf(context);
     //Future.microtask - штука специально для провайдера, чтобы вызов
     //notifylisteners() во время build не ломал приложение
-    Future.microtask(() => context.read<MovieDetailsModel>().setupLocale(context));
+    Future.microtask(
+        () => context.read<MovieDetailsViewModel>().setupLocale(context, locale));
   }
 
   @override
@@ -44,7 +46,7 @@ class _BodyWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isLoading =
-        context.select((MovieDetailsModel model) => model.data.isLoading);
+        context.select((MovieDetailsViewModel model) => model.data.isLoading);
     if (isLoading) {
       return const Center(
         child: CircularProgressIndicator(),
@@ -73,7 +75,7 @@ class _TitleWidget extends StatelessWidget {
 // виджет перенесен отдельно аппбар и скаффолд перезагружаться не будут
   @override
   Widget build(BuildContext context) {
-    final title = context.select((MovieDetailsModel model) => model.data.title);
+    final title = context.select((MovieDetailsViewModel model) => model.data.title);
     return Text(title);
   }
 }

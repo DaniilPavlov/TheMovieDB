@@ -66,7 +66,7 @@ class _FormWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = context.read<AuthModel>();
+    final model = context.read<AuthViewModel>();
     const textStyle = TextStyle(
       fontSize: 16,
       color: Color(0xff212529),
@@ -123,7 +123,7 @@ class _AuthButtonWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = context.watch<AuthModel>();
+    final model = context.watch<AuthViewModel>();
     const color = Color(0xFF01b4e4);
     final child = model.isAuthProgress
         ? const SizedBox(
@@ -171,7 +171,7 @@ class _ErrorMessageWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final errorMessage =
-        context.select((AuthModel model) => model.errorMessage);
+        context.select((AuthViewModel model) => model.errorMessage);
     if (errorMessage == null) return const SizedBox.shrink();
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 20),
